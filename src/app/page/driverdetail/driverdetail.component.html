@@ -1,0 +1,290 @@
+<div class="container-fluid">
+  <div *ngIf="driver">
+    <form [formGroup]="driverForm">
+      <div class="form-group small">
+        <hr />
+        <div class="row">
+          <div class="col-auto">
+            <img
+              src="img/driver.jpg"
+              alt="Driver"
+              width="180px"
+              height="150px"
+            />
+          </div>
+          <div class="col-auto">
+            <h2><i class="fa-regular fa-user me-1"></i>{{ driver.name }}</h2>
+            <p>
+              <i class="fa-regular fa-building me-1"></i>
+              {{ getContractosName(driverForm.get("contractorid")?.value) }}
+            </p>
+            <p><i class="fa-regular fa-envelope me-1"></i>Email.com</p>
+            <p><i class="fa-solid fa-phone me-1"></i>070078601</p>
+          </div>
+          <div class="mb-3 col-auto">
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="toggleEdit()"
+            >
+              <i class="far fa-edit"></i>
+              {{ isEdit ? "Save" : "Edit" }}
+            </button>
+            <button
+              class="btn btn-outline-primary ms-1"
+              type="button"
+              routerLink="/adddriver"
+            >
+              <i class="fa-solid fa-circle-plus"></i>
+              Add New Driver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary mx-1"
+              (click)="resetForm()"
+              *ngIf="isEdit"
+            >
+              <i class="fa-solid fa-window-restore"></i>
+              Reset
+            </button>
+            <button
+              class="btn btn-outline-primary"
+              *ngIf="isEdit"
+              (click)="toggleEdit()"
+            >
+              <i class="fa-regular fa-rectangle-xmark"></i>
+              cancel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div class="mb-3 row border">
+          <label for="id" class="col-sm-1 col-form-label text-primary"
+            >Driver ID:</label
+          >
+          <div class="col-3">
+            <input id="id" class="form-control" formControlName="id" />
+          </div>
+          <label for="dob" class="col-sm-1 col-form-label text-primary"
+            >Date of birth:</label
+          >
+          <div class="col-3">
+            <input
+              id="dob"
+              type="text"
+              class="form-control"
+              formControlName="dob"
+            />
+          </div>
+          <label for="nic" class="col-sm-1 col-form-label text-primary"
+            >NIC Card#:</label
+          >
+          <div class="col-3">
+            <input
+              id="nic"
+              class="form-control"
+              type="text"
+              formControlName="nic"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label for="name" class="col-sm-1 col-form-label text-primary"
+            >Name:</label
+          >
+          <div class="col-3">
+            <input
+              id="name"
+              type="text"
+              name="name"
+              class="form-control"
+              formControlName="name"
+            />
+          </div>
+          <label for="designation" class="col-sm-1 col-form-label text-primary"
+            >Designation:</label
+          >
+          <div class="col-3">
+            <input
+              id="designation"
+              type="text"
+              name="designation"
+              class="form-control"
+              formControlName="designation"
+            />
+          </div>
+          <label for="department" class="col-sm-1 col-form-label text-primary"
+            >Department:</label
+          >
+          <div class="col-3">
+            <input
+              id="department"
+              type="text"
+              name="department"
+              class="form-control"
+              formControlName="department"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label
+            for="licensenumber"
+            class="col-sm-1 col-form-label text-primary"
+            >License #:</label
+          >
+          <div class="col-3">
+            <input
+              id="licensenumber"
+              type="text"
+              name="licensenumber"
+              class="form-control"
+              formControlName="licensenumber"
+            />
+          </div>
+          <label
+            for="licensetypeid"
+            class="col-sm-1 col-form-label text-primary"
+            >License Type:</label
+          >
+          <div class="col-3">
+            <select
+              class="form-select"
+              id="licensetypeid"
+              formControlName="licensetypeid"
+              *ngIf="isEdit; else showLicenseType"
+            >
+              <option *ngFor="let group of dltypes" [value]="group.id">
+                {{ group.name }}
+              </option>
+            </select>
+            <ng-template #showLicenseType>
+              <input
+                class="form-control"
+                id="licensetypeid"
+                [value]="getDLTypesName(driverForm.get('licensetypeid')?.value)"
+                disabled
+              />
+            </ng-template>
+          </div>
+          <label
+            for="licenseexpiry"
+            class="col-sm-1 col-form-label text-primary"
+            >License Expiry:</label
+          >
+          <div class="col-3">
+            <input
+              id="licenseexpiry"
+              type="text"
+              name="licenseexpiry"
+              class="form-control"
+              formControlName="licenseexpiry"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label for="permitnumber" class="col-sm-1 col-form-label text-primary"
+            >Permit #:</label
+          >
+          <div class="col-3">
+            <input
+              id="permitnumber"
+              type="text"
+              name="permitnumber"
+              class="form-control"
+              formControlName="permitnumber"
+            />
+          </div>
+          <label for="permitissue" class="col-sm-1 col-form-label text-primary"
+            >Permit Issue:</label
+          >
+          <div class="col-3">
+            <input
+              id="permitissue"
+              type="text"
+              name="permitissue"
+              class="form-control"
+              formControlName="permitissue"
+            />
+          </div>
+          <label for="permitexpiry" class="col-sm-1 col-form-label text-primary"
+            >Permit Expiry:</label
+          >
+          <div class="col-3">
+            <input
+              id="permitexpiry"
+              type="text"
+              name="permitexpiry"
+              class="form-control"
+              formControlName="permitexpiry"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label for="bloodgroup" class="col-sm-1 col-form-label text-primary"
+            >Blood Group:</label
+          >
+          <div class="col-3">
+            <select
+              class="form-select"
+              id="bloodgroup"
+              formControlName="bloodgroupid"
+              *ngIf="isEdit; else showBloodGroup"
+            >
+              <option *ngFor="let group of bloodgroups" [value]="group.id">
+                {{ group.name }}
+              </option>
+            </select>
+            <ng-template #showBloodGroup>
+              <input
+                class="form-control"
+                id="bloodgroup"
+                [value]="
+                  getBloodGroupName(driverForm.get('bloodgroupid')?.value)
+                "
+                disabled
+              />
+            </ng-template>
+          </div>
+          <label for="contractorid" class="col-sm-1 col-form-label text-primary"
+            >Contractor:</label
+          >
+          <div class="col-3">
+            <select
+              class="form-select"
+              id="contractorid"
+              formControlName="contractorid"
+              *ngIf="isEdit; else showContractor"
+            >
+              <option *ngFor="let group of contractors" [value]="group.id">
+                {{ group.name }}
+              </option>
+            </select>
+            <ng-template #showContractor>
+              <input
+                class="form-control"
+                id="contractorid"
+                [value]="
+                  getContractosName(driverForm.get('contractorid')?.value)
+                "
+                disabled
+              />
+            </ng-template>
+          </div>
+          <label for="createdby" class="col-sm-1 col-form-label text-primary"
+            >Created By:</label
+          >
+          <div class="col-3">
+            <input
+              id="createdby"
+              type="text"
+              name="createdby"
+              class="form-control"
+              formControlName="createdby"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

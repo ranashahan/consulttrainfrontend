@@ -1,0 +1,215 @@
+<div class="container-fluid">
+  <!-- Use alert component with a success message -->
+  <app-alert
+    *ngIf="isAlert"
+    [message]="successMessage"
+    [type]="alertType"
+    [dismissible]="true"
+  ></app-alert>
+  <hr />
+  <div class="row">
+    <div class="col-auto">
+      <img
+        src="img/adddriver.jpg"
+        alt="AddDriver"
+        width="180px"
+        height="150px"
+      />
+    </div>
+    <div class="col-auto">
+      <h2>Add Driver</h2>
+      <p>Please fill complete form to be insert driver data into database:</p>
+    </div>
+  </div>
+  <hr />
+  <form [formGroup]="formDriver">
+    <div class="form-group small">
+      <div class="row">
+        <div class="col-auto mt-4">
+          <div class="form-group required">
+            <label class="label ms-1 strong" for="drivername"
+              >Driver Name</label
+            >
+            <input
+              class="form-control form-control-sm"
+              id="drivername"
+              type="text"
+              placeholder="Muhammad Ahmed"
+              formControlName="name"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label label-sm ms-1 strong" for="driverdob"
+            >Date of birth</label
+          >
+          <input
+            class="form-control form-control-sm"
+            id="driverdob"
+            type="date"
+            formControlName="dob"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <div class="form-group required">
+            <label class="label ms-1 strong" for="nic">NIC # </label>
+            <input
+              class="form-control form-control-sm"
+              id="nic"
+              type="text"
+              placeholder="xxxxx-xxxxxxx-x"
+              formControlName="nic"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-auto mt-4">
+          <div class="form-group required">
+            <label class="label ms-1 strong" for="licensenumber"
+              >License #</label
+            >
+            <input
+              class="form-control form-control-sm"
+              id="licensenumber"
+              type="text"
+              placeholder="QA-2233"
+              formControlName="licensenumber"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="licensetypeid"
+            >License Type</label
+          >
+          <select
+            class="form-select form-select-sm"
+            id="licensetypeid"
+            formControlName="licensetypeid"
+          >
+            <option disabled value="null">Select License type</option>
+            <option *ngFor="let group of dltypes" [value]="group.id">
+              {{ group.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="licenseexpiry"
+            >License expiry</label
+          >
+          <input
+            class="form-control form-control-sm"
+            id="licenseexpiry"
+            type="date"
+            placeholder="QA-2233"
+            formControlName="licenseexpiry"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="formcount">FormCount</label>
+          <input
+            class="form-control form-control-sm w-50"
+            min="0"
+            id="formcount"
+            type="number"
+            placeholder="0"
+            formControlName="formcount"
+          />
+        </div>
+        <!-- </div> -->
+        <!-- <div class="row mt-4"> -->
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="contractor">Contractors</label>
+          <select
+            class="form-select form-select-sm"
+            id="contractor"
+            formControlName="contractorid"
+          >
+            <option disabled value="null">Select Contractor</option>
+            <option *ngFor="let group of contractors" [value]="group.id">
+              {{ group.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="designation">Designation</label>
+          <input
+            class="form-control form-control-sm"
+            id="designation"
+            type="text"
+            placeholder="Safety Manager"
+            formControlName="designation"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="department">Department</label>
+          <input
+            class="form-control form-control-sm"
+            id="department"
+            type="text"
+            placeholder="Quality Control"
+            formControlName="department"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="permit">Permit #</label>
+          <input
+            class="form-control form-control-sm"
+            id="permit"
+            type="text"
+            placeholder="CONT-2892"
+            formControlName="permitnumber"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="permitissue"
+            >Permit IssueDate</label
+          >
+          <input
+            class="form-control form-control-sm"
+            id="permitissue"
+            type="date"
+            placeholder="Quality Control"
+            formControlName="permitissue"
+          />
+        </div>
+        <div class="col-auto mt-4">
+          <label class="label ms-1 strong" for="blood">Blood Groups</label>
+          <select
+            class="form-select form-select-sm"
+            id="blood"
+            formControlName="bloodgroupid"
+          >
+            <option disabled value="null">Select BloodGroup</option>
+            <option *ngFor="let group of bloodgroups" [value]="group.id">
+              {{ group.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12 text-center">
+          <div class="btn-group" role="group" aria-label="Default button group">
+            <button
+              type="submit"
+              class="btn btn-outline-primary"
+              [disabled]="formDriver.invalid"
+              (click)="createDriver()"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="frmReset()"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr />
+</div>

@@ -1,0 +1,291 @@
+<div class="container-fluid">
+  <hr />
+  <div class="row">
+    <div class="col-auto">
+      <img
+        src="img/alldriver.png"
+        alt="AllDrivers"
+        width="180px"
+        height="150px"
+      />
+    </div>
+    <div class="col-auto">
+      <h2>All Drivers</h2>
+      <p>You can select it my navigating one by one and edit it (if needed):</p>
+    </div>
+  </div>
+  <hr />
+  <div class="bg-warning">
+    <form
+      [formGroup]="formSaveDrivers"
+      class="row row-cols-lg-auto g-3 align-items-end ms-1"
+    >
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormInputGroupname"
+          >Driver Name</label
+        >
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="inlineFormInputGroupname"
+            placeholder="Muhammad Ahmed"
+            formControlName="name"
+          />
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormInputGroupNic"
+          >Driver NIC</label
+        >
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="inlineFormInputGroupNic"
+            placeholder="xxxxx-xxxxxxx-x"
+            formControlName="nic"
+          />
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormInputGroupLicense"
+          >License #</label
+        >
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="inlineFormInputGroupLicense"
+            placeholder="AA-xxxxx"
+            formControlName="licensenumber"
+          />
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormInputGroupPermit"
+          >Permit #</label
+        >
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="inlineFormInputGroupPermit"
+            placeholder="CONT-xxxx"
+            formControlName="permitnumber"
+          />
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormInputGroupExpiry"
+          >Permit Expiry</label
+        >
+        <div class="input-group">
+          <input
+            type="date"
+            class="form-control form-control-sm"
+            id="inlineFormInputGroupExpiry"
+            formControlName="permitexpiry"
+          />
+        </div>
+      </div>
+
+      <div class="col-auto">
+        <label class="label ms-1 strong" for="inlineFormSelectPref"
+          >Contractor</label
+        >
+        <select
+          class="form-select form-select-sm"
+          id="inlineFormSelectPref"
+          formControlName="contractorid"
+        >
+          <option disabled value="null">Select Contractor name</option>
+          <option *ngFor="let group of contractors" [value]="group.id">
+            {{ group.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-auto">
+        <button
+          type="submit"
+          class="btn btn-primary btn-sm"
+          (click)="getFillterredData()"
+        >
+          <i class="fa-brands fa-searchengin me-1"></i>Search
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm ms-1"
+          (click)="formRest()"
+        >
+          <i class="fa-solid fa-window-restore me-1"></i>Reset
+        </button>
+      </div>
+    </form>
+    <hr />
+  </div>
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Filter by name..."
+      [(ngModel)]="searchTerm"
+      (input)="filterDrivers()"
+    />
+  </div>
+  <hr />
+  <button
+    class="btn btn-sm btn-outline-secondary ms-1 float-end"
+    (click)="executeExport()"
+    title="Export to Excel"
+  >
+    <i class="fa-solid fa-file-excel me-1"></i>Export
+  </button>
+  <button
+    class="btn btn-sm btn-outline-secondary float-end"
+    routerLink="/adddriver"
+  >
+    <i class="fa-solid fa-circle-plus me-1"></i>Add new driver
+  </button>
+
+  <table
+    class="table table-hover table-bordered table-responsive-md fs-7"
+    id="alldrivers-table"
+  >
+    <thead class="table-warning">
+      <tr>
+        <th>#</th>
+        <th (click)="sortData('id')">
+          ID<i
+            class="fa-solid"
+            [ngClass]="{
+              'fa-arrow-up': sortKey === 'id' && sortDirection === 'asc',
+              'fa-arrow-down': sortKey === 'id' && sortDirection === 'desc'
+            }"
+          ></i>
+        </th>
+        <th>Driver Name</th>
+        <th>Date of Brith</th>
+        <th>NIC</th>
+        <th>License #</th>
+        <th>License Type</th>
+        <th>License Expiry</th>
+        <th>Permit #</th>
+        <th>Permit Issue</th>
+        <th>Permit Expiry</th>
+        <th>Contractor</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of paginatedDrivers; let i = index">
+        <td>
+          <div>
+            {{ i + 1 }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.id }}
+          </div>
+        </td>
+        <td>
+          <div>
+            <a routerLink="/alldrivers/{{ item.id }}">
+              {{ item.name }}
+            </a>
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.dob }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.nic }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.licensenumber }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ getDLTypesName(item.licensetypeid) }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.licenseexpiry }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.permitnumber }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.permitissue }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ item.permitexpiry }}
+          </div>
+        </td>
+        <td>
+          <div>
+            {{ getContractosName(item.contractorid) }}
+          </div>
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-outline-primary position-relative"
+            (click)="viewDriverDetails(item.id)"
+          >
+            <i class="fa-solid fa-circle-info"></i>
+            <div *ngIf="item.formcount">
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
+              >
+                {{ item.formcount }}
+                <span class="visually-hidden">unread messages</span>
+              </span>
+            </div>
+          </button>
+          <button
+            class="btn btn-sm btn-outline-danger ms-3"
+            (click)="deleteDriver(item.id)"
+          >
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" type="button" (click)="previousPage()">Previous</a>
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let page of pages"
+        [class.active]="page === currentPage"
+      >
+        <a class="page-link" type="button" (click)="goToPage(page)">{{
+          page
+        }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" type="button" (click)="nextPage()">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>

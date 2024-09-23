@@ -1,0 +1,316 @@
+<nav class="navbar navbar-expand-lg bg-gradient1 p-1">
+  <div class="container-fluid">
+    <!-- Brand and Search (Left Aligned) -->
+    <div class="d-flex align-items-center">
+      <!-- Brand Logo (Smaller size) -->
+      <a class="navbar-brand m-0 p-0" routerLink="/dashboard">
+        <img src="img/logo.png" alt="Brand" width="30" height="24" />
+      </a>
+      <!-- AJAX Search Field -->
+      <form
+        class="d-flex ms-2 position-relative"
+        role="search"
+        (submit)="clearSearch()"
+      >
+        <input
+          class="form-control form-control-sm me-2"
+          id="search"
+          type="search"
+          placeholder="Search driver by NIC"
+          [formControl]="searchControl"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-light btn-sm" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <!-- Search Results Dropdown -->
+        <ul
+          *ngIf="searchResults.length > 0"
+          class="list-group position-absolute mt-4"
+          style="width: 100%; z-index: 1000; background-color: white"
+        >
+          <li
+            *ngFor="let result of searchResults"
+            class="list-group-item small"
+          >
+            <!-- Customize result display here -->
+            <a
+              [routerLink]="['/alldrivers/', result.id]"
+              (click)="clearSearch()"
+            >
+              DriverName: {{ result.name }} <br />
+              DriverNIC:{{ result.nic }}
+            </a>
+          </li>
+        </ul>
+
+        <!-- Loading Indicator -->
+        <div
+          *ngIf="isLoading"
+          class="spinner-border text-light ms-2"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Toggler for mobile view -->
+    <button
+      class="navbar-toggler p-1"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Right Aligned Menu Items -->
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ms-auto small">
+        <!-- Smaller text and right aligned -->
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/dashboard"
+            routerLinkActive="custom-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            aria-current="page"
+          >
+            <i class="fa-solid fa-house fa-flip me-1"></i>Dashboard
+          </a>
+        </li>
+        <ng-container *ngFor="let menu of dropdownMenus">
+          <li class="nav-item dropdown" *ngIf="canAccess(menu.roles)">
+            <a
+              class="nav-link dropdown-toggle text-light"
+              href="#"
+              id="{{ menu.id }}"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i [class]="menu.icon"></i> {{ menu.name }}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <ng-container *ngFor="let item of menu.items">
+                <li *ngIf="canAccess(item.roles)">
+                  <a
+                    class="dropdown-item text-primary small"
+                    [routerLink]="item.path"
+                    routerLinkActive="custom-active-dropdown"
+                    ><i [class]="item.icon"></i>{{ item.name }}
+                  </a>
+                  <hr class="dropdown-divider" />
+                </li>
+              </ng-container>
+            </ul>
+          </li>
+        </ng-container>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle text-light"
+            href="#"
+            id="user"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            ><i class="fa-solid fa-user-gear fa-fade me-1"></i> {{ username }}
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a
+                class="dropdown-item text-primary small"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#myModal"
+                (click)="resetForm()"
+                ><i class="fa-solid fa-user me-1"></i>Profile
+              </a>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a
+                class="dropdown-item text-primary small"
+                routerLink="/login"
+                routerLinkActive="active"
+                (click)="onLogOut()"
+                ><i class="fa-solid fa-right-from-bracket me-1"></i>LogOut
+              </a>
+              <hr class="dropdown-divider" />
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header bgGradient">
+        <h4 class="modal-title text-white">User Profile</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="userForm">
+          <div class="row">
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="userid" class="form-label">User ID: </label>
+                <input
+                  name="userid"
+                  type="text"
+                  class="form-control"
+                  id="userid"
+                  formControlName="userid"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                  name="username"
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="m.ibraheem"
+                  formControlName="username"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  placeholder="name@example.com"
+                  formControlName="email"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="card" style="width: 10rem; height: 4rem">
+                <!-- <div *ngIf="retrievedImage" >
+                  <img
+                    [src]="'data:image/jpeg;base64,' + retrievedImage"
+                    alt="Profile Picture"
+                  />
+                </div> -->
+                <img src="img/maleAvatar.png" class="card-img-top" alt="..." />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input
+                  name="name"
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Muhammad Ibraheem"
+                  formControlName="name"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile #</label>
+                <input
+                  name="mobile"
+                  type="text"
+                  class="form-control"
+                  id="mobile"
+                  placeholder="300-264-5667"
+                  formControlName="mobile"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="company" class="form-label">Company Name</label>
+                <input
+                  name="company"
+                  type="text"
+                  class="form-control"
+                  id="company"
+                  placeholder="Consult & Train"
+                  formControlName="company"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3">
+              <div class="mb-3">
+                <label for="designation" class="form-label">Designation</label>
+                <input
+                  name="designation"
+                  type="text"
+                  class="form-control"
+                  id="designation"
+                  placeholder="Sr. Consultant"
+                  formControlName="designation"
+                />
+              </div>
+            </div>
+            <div class="col-3">
+              <label for="role" class="form-label">Roles</label>
+              <input
+                name="role"
+                class="form-control"
+                list="datalistOptions"
+                id="role"
+                placeholder="Type to search..."
+                formControlName="role"
+              />
+              <datalist id="datalistOptions">
+                <option value="member"></option>
+                <option value="staff"></option>
+                <option value="admin"></option>
+                <option value="manager"></option>
+              </datalist>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="saveForm()"
+        >
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+<app-footer></app-footer>
