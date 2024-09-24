@@ -1,4 +1,10 @@
 <div class="container-fluid">
+  <app-alert
+    *ngIf="isAlert"
+    [message]="successMessage"
+    [type]="alertType"
+    [dismissible]="true"
+  ></app-alert>
   <div *ngIf="driver">
     <form [formGroup]="driverForm">
       <div class="form-group small">
@@ -18,7 +24,10 @@
               <i class="fa-regular fa-building me-1"></i>
               {{ getContractosName(driverForm.get("contractorid")?.value) }}
             </p>
-            <p><i class="fa-regular fa-envelope me-1"></i>Email.com</p>
+            <p>
+              <i class="fa-solid fa-table-list me-1"></i
+              >{{ driverForm.get("formcount")?.value }}
+            </p>
             <p><i class="fa-solid fa-phone me-1"></i>070078601</p>
           </div>
           <div class="mb-3 col-auto">
@@ -28,6 +37,7 @@
               (click)="toggleEdit()"
             >
               <i class="far fa-edit"></i>
+
               {{ isEdit ? "Save" : "Edit" }}
             </button>
             <button
@@ -73,7 +83,7 @@
             <input
               id="dob"
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="dob"
             />
           </div>
@@ -83,7 +93,7 @@
           <div class="col-3">
             <input
               id="nic"
-              class="form-control"
+              class="form-control form-control-sm"
               type="text"
               formControlName="nic"
             />
@@ -98,7 +108,7 @@
               id="name"
               type="text"
               name="name"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="name"
             />
           </div>
@@ -110,7 +120,7 @@
               id="designation"
               type="text"
               name="designation"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="designation"
             />
           </div>
@@ -122,7 +132,7 @@
               id="department"
               type="text"
               name="department"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="department"
             />
           </div>
@@ -138,7 +148,7 @@
               id="licensenumber"
               type="text"
               name="licensenumber"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="licensenumber"
             />
           </div>
@@ -149,7 +159,7 @@
           >
           <div class="col-3">
             <select
-              class="form-select"
+              class="form-select form-select-sm"
               id="licensetypeid"
               formControlName="licensetypeid"
               *ngIf="isEdit; else showLicenseType"
@@ -160,7 +170,7 @@
             </select>
             <ng-template #showLicenseType>
               <input
-                class="form-control"
+                class="form-control form-control-sm"
                 id="licensetypeid"
                 [value]="getDLTypesName(driverForm.get('licensetypeid')?.value)"
                 disabled
@@ -177,7 +187,7 @@
               id="licenseexpiry"
               type="text"
               name="licenseexpiry"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="licenseexpiry"
             />
           </div>
@@ -191,7 +201,7 @@
               id="permitnumber"
               type="text"
               name="permitnumber"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="permitnumber"
             />
           </div>
@@ -203,7 +213,7 @@
               id="permitissue"
               type="text"
               name="permitissue"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="permitissue"
             />
           </div>
@@ -215,7 +225,7 @@
               id="permitexpiry"
               type="text"
               name="permitexpiry"
-              class="form-control"
+              class="form-control form-control-sm"
               formControlName="permitexpiry"
             />
           </div>
@@ -226,7 +236,7 @@
           >
           <div class="col-3">
             <select
-              class="form-select"
+              class="form-select form-select-sm"
               id="bloodgroup"
               formControlName="bloodgroupid"
               *ngIf="isEdit; else showBloodGroup"
@@ -237,7 +247,7 @@
             </select>
             <ng-template #showBloodGroup>
               <input
-                class="form-control"
+                class="form-control form-control-sm"
                 id="bloodgroup"
                 [value]="
                   getBloodGroupName(driverForm.get('bloodgroupid')?.value)
@@ -251,7 +261,7 @@
           >
           <div class="col-3">
             <select
-              class="form-select"
+              class="form-select form-select-sm"
               id="contractorid"
               formControlName="contractorid"
               *ngIf="isEdit; else showContractor"
@@ -262,7 +272,7 @@
             </select>
             <ng-template #showContractor>
               <input
-                class="form-control"
+                class="form-control form-control-sm"
                 id="contractorid"
                 [value]="
                   getContractosName(driverForm.get('contractorid')?.value)
@@ -271,16 +281,17 @@
               />
             </ng-template>
           </div>
-          <label for="createdby" class="col-sm-1 col-form-label text-primary"
-            >Created By:</label
+          <label for="formcount" class="col-sm-1 col-form-label text-primary"
+            >ExistingForm:</label
           >
           <div class="col-3">
             <input
-              id="createdby"
-              type="text"
-              name="createdby"
-              class="form-control"
-              formControlName="createdby"
+              id="formcount"
+              type="number"
+              minlength="0"
+              name="formcount"
+              class="form-control form-control-sm"
+              formControlName="formcount"
             />
           </div>
         </div>

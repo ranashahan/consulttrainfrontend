@@ -74,27 +74,69 @@ export class DriverService {
     return this.http.get<apiDriverModel>(`${this.apiURL}/search?${query}`);
   }
 
-  // /**
-  //  * Update driver by id
-  //  * @param id id
-  //  * @param name name
-  //  * @param contact contact
-  //  * @param address address
-  //  * @returns response
-  //  */
-  // updatedriver(
-  //   id: number,
-  //   name: string,
-  //   contact: string,
-  //   address: string
-  // ): Observable<apiDriverModel> {
-  //   return this.http.put<apiDriverModel>(this.apiURL + id, {
-  //     name,
-  //     contact,
-  //     address,
-  //     userid: this.authService.getUserID(),
-  //   });
-  // }
+  /**
+   * Update driver by id
+   * @param id id
+   * @param name name
+   * @param contact contact
+   * @param address address
+   * @returns response
+   */
+  /**
+   *
+   * @param id id
+   * @param name name
+   * @param dob date of birth
+   * @param nic nic
+   * @param licensenumber license number
+   * @param licensetypeid license type
+   * @param licenseexpiry expiry
+   * @param designation designation
+   * @param department department
+   * @param permitnumber permit number
+   * @param permitissue permit issue date
+   * @param permitexpiry permit expiry date
+   * @param bloodgroupid blood group id
+   * @param contractorid contractor id
+   * @param formcount existing forms count
+   * @returns
+   */
+  updatedriver(
+    id: number,
+    name: string,
+    dob: string,
+    nic: string,
+    licensenumber: string,
+    licensetypeid: number,
+    licenseexpiry: Date,
+    designation: string,
+    department: string,
+    permitnumber: string,
+    permitissue: Date,
+    permitexpiry: Date,
+    bloodgroupid: number,
+    contractorid: number,
+    formcount: number
+  ): Observable<apiDriverModel> {
+    console.log('this is my id: ' + name);
+    return this.http.put<apiDriverModel>(this.apiURL + id, {
+      name,
+      dob,
+      nic,
+      licensenumber,
+      licensetypeid,
+      licenseexpiry,
+      designation,
+      department,
+      permitnumber,
+      permitissue,
+      permitexpiry,
+      bloodgroupid,
+      contractorid,
+      formcount,
+      userid: this.authService.getUserID(),
+    });
+  }
 
   /**
    * Create Driver
