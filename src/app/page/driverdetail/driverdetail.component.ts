@@ -15,11 +15,18 @@ import { ContractorService } from '../../services/contractor.service';
 import { DltypeService } from '../../services/dltype.service';
 import { apiContractorModel } from '../../model/Contractor';
 import { UtilitiesService } from '../../services/utilities.service';
+import { AlertComponent } from '../../widget/alert/alert.component';
 
 @Component({
   selector: 'app-driverdetail',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    AlertComponent,
+  ],
   templateUrl: './driverdetail.component.html',
   styleUrl: './driverdetail.component.css',
 })
@@ -31,6 +38,10 @@ export class DriverdetailComponent implements OnInit {
   bloodgroups: apiGenericModel[] = [];
   dltypes: apiGenericModel[] = [];
   contractors: apiContractorModel[] = [];
+
+  isAlert: boolean = false;
+  alertType = '';
+  successMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -62,6 +73,7 @@ export class DriverdetailComponent implements OnInit {
       permitexpiry: [{ value: '', disabled: !this.isEdit }],
       bloodgroupid: [{ value: '', disabled: !this.isEdit }],
       contractorid: [{ value: '', disabled: !this.isEdit }],
+      formcount: [{ value: 0, disabled: !this.isEdit }],
       createdby: [{ value: '', disabled: true }],
     });
     // Fetch the driver details using the ID
@@ -109,7 +121,60 @@ export class DriverdetailComponent implements OnInit {
       });
   }
 
+  updateDriver() {
+    if (this.driverForm.valid) {
+      let updatedDriver = this.driverForm.getRawValue();
+      if (updatedDriver.dob) {
+        updatedDriver.dob = this.utils.convertToMySQLDate(updatedDriver.dob);
+      }
+      if (updatedDriver.licenseexpiry) {
+        updatedDriver.licenseexpiry = this.utils.convertToMySQLDate(
+          updatedDriver.licenseexpiry
+        );
+      }
+      if (updatedDriver.permitissue) {
+        updatedDriver.permitissue = this.utils.convertToMySQLDate(
+          updatedDriver.permitissue
+        );
+      }
+
+      if (updatedDriver.permitexpiry) {
+        updatedDriver.permitexpiry = this.utils.convertToMySQLDate(
+          updatedDriver.permitexpiry
+        );
+      }
+
+      this.driverService
+        .updatedriver(
+          updatedDriver.id,
+          updatedDriver.name,
+          updatedDriver.dob,
+          updatedDriver.nic,
+          updatedDriver.licensenumber,
+          updatedDriver.licensetypeid,
+          updatedDriver.licenseexpiry,
+          updatedDriver.designation,
+          updatedDriver.department,
+          updatedDriver.permitnumber,
+          updatedDriver.permitissue,
+          updatedDriver.permitexpiry,
+          updatedDriver.bloodgroupid,
+          updatedDriver.contractorid,
+          updatedDriver.formcount
+        )
+        .subscribe((res: any) => {
+          this.successMessage = 'Driver updated successfully';
+          this.alertType = 'success';
+          this.isAlert = true;
+        });
+    }
+  }
+
   toggleEdit(): void {
+    if (this.isEdit) {
+      console.log(this.driverForm.get('id')?.value);
+      this.updateDriver();
+    }
     this.isEdit = !this.isEdit;
 
     // Enable or disable all fields except 'id'

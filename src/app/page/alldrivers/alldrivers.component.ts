@@ -152,7 +152,6 @@ export class AlldriversComponent implements OnInit {
   }
 
   filterDrivers(): void {
-    debugger;
     if (this.searchTerm) {
       this.filteredDrivers = this.drivers.filter((driver) =>
         driver.name.toLowerCase().includes(this.searchTerm.toLowerCase())

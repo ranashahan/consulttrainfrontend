@@ -45,4 +45,14 @@ export class UtilitiesService {
     const selectedGroup = items.find((group) => group.id === itemId);
     return selectedGroup ? selectedGroup.name : '';
   }
+  /**
+   * This is the generic method for date conversion
+   * @param date {string} date wanted to be coverted
+   * @returns
+   */
+  convertToMySQLDate(date: string): string {
+    // Convert MM/DD/YYYY format to YYYY-MM-DD
+    const [month, day, year] = date.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
 }
