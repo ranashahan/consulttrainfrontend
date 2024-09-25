@@ -35,7 +35,8 @@ export class AdddriverComponent implements OnInit {
     permitissue: new FormControl(),
     bloodgroupid: new FormControl(),
     contractorid: new FormControl(),
-    formcount: new FormControl(),
+    ddccount: new FormControl(),
+    experience: new FormControl(),
   });
 
   contractors: apiContractorModel[] = [];
@@ -107,7 +108,8 @@ export class AdddriverComponent implements OnInit {
         this.formDriver.value.permitissue,
         this.formDriver.value.bloodgroupid,
         this.formDriver.value.contractorid,
-        this.formDriver.value.formcount
+        this.formDriver.value.ddccount,
+        this.formDriver.value.experience
       )
       .subscribe((res: any) => {
         if (res) {
