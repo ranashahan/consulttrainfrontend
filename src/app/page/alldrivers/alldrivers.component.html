@@ -167,7 +167,7 @@
           ></i>
         </th>
         <th>Driver Name</th>
-        <th>Date of Brith</th>
+        <th>Contractor</th>
         <th>NIC</th>
         <th>License #</th>
         <th>License Type</th>
@@ -175,7 +175,6 @@
         <th>Permit #</th>
         <th>Permit Issue</th>
         <th>Permit Expiry</th>
-        <th>Contractor</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -200,7 +199,7 @@
         </td>
         <td>
           <div>
-            {{ item.dob }}
+            {{ getContractosName(item.contractorid) }}
           </div>
         </td>
         <td>
@@ -238,11 +237,7 @@
             {{ item.permitexpiry }}
           </div>
         </td>
-        <td>
-          <div>
-            {{ getContractosName(item.contractorid) }}
-          </div>
-        </td>
+
         <td>
           <button
             type="button"
@@ -250,11 +245,11 @@
             (click)="viewDriverDetails(item.id)"
           >
             <i class="fa-solid fa-circle-info"></i>
-            <div *ngIf="item.formcount">
+            <div *ngIf="item.ddccount">
               <span
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
               >
-                {{ item.formcount }}
+                {{ item.ddccount }}
                 <span class="visually-hidden">unread messages</span>
               </span>
             </div>

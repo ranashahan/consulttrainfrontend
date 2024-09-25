@@ -2,6 +2,7 @@ export interface apiDriverModel {
   id: number;
   name: string;
   dob: string;
+  age: number;
   nic: string;
   licensenumber: string;
   licensetypeid: number;
@@ -13,7 +14,8 @@ export interface apiDriverModel {
   permitexpiry: Date;
   bloodgroupid: number;
   contractorid: number;
-  formcount: number;
+  ddccount: number;
+  experience: number;
   createdby: string;
   isEdit: boolean;
 }

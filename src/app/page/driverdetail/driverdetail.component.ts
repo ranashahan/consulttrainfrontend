@@ -62,7 +62,8 @@ export class DriverdetailComponent implements OnInit {
       id: [{ value: '', disabled: true }], // Always disabled
       name: [{ value: '', disabled: !this.isEdit }],
       dob: [{ value: '', disabled: !this.isEdit }],
-      nic: [{ value: '', disabled: !this.isEdit }],
+      age: [{ value: '', disabled: !this.isEdit }],
+      nic: [{ value: '', disabled: true }],
       licensenumber: [{ value: '', disabled: !this.isEdit }],
       licensetypeid: [{ value: '', disabled: !this.isEdit }],
       licenseexpiry: [{ value: '', disabled: !this.isEdit }],
@@ -73,7 +74,8 @@ export class DriverdetailComponent implements OnInit {
       permitexpiry: [{ value: '', disabled: !this.isEdit }],
       bloodgroupid: [{ value: '', disabled: !this.isEdit }],
       contractorid: [{ value: '', disabled: !this.isEdit }],
-      formcount: [{ value: 0, disabled: !this.isEdit }],
+      ddccount: [{ value: 0, disabled: !this.isEdit }],
+      experience: [{ value: 0, disabled: !this.isEdit }],
       createdby: [{ value: '', disabled: true }],
     });
     // Fetch the driver details using the ID
@@ -124,6 +126,7 @@ export class DriverdetailComponent implements OnInit {
   updateDriver() {
     if (this.driverForm.valid) {
       let updatedDriver = this.driverForm.getRawValue();
+      console.log(updatedDriver);
       if (updatedDriver.dob) {
         updatedDriver.dob = this.utils.convertToMySQLDate(updatedDriver.dob);
       }
@@ -160,26 +163,28 @@ export class DriverdetailComponent implements OnInit {
           updatedDriver.permitexpiry,
           updatedDriver.bloodgroupid,
           updatedDriver.contractorid,
-          updatedDriver.formcount
+          updatedDriver.ddccount,
+          updatedDriver.experience
         )
         .subscribe((res: any) => {
           this.successMessage = 'Driver updated successfully';
           this.alertType = 'success';
           this.isAlert = true;
+          this.getDriver();
         });
     }
   }
 
   toggleEdit(): void {
-    if (this.isEdit) {
-      console.log(this.driverForm.get('id')?.value);
-      this.updateDriver();
-    }
+    // if (this.isEdit) {
+    //   console.log(this.driverForm.get('id')?.value);
+    //   this.updateDriver();
+    // }
     this.isEdit = !this.isEdit;
 
     // Enable or disable all fields except 'id'
     Object.keys(this.driverForm.controls).forEach((field) => {
-      if (field !== 'id' && field !== 'createdby') {
+      if (field !== 'id' && field !== 'age' && field !== 'createdby') {
         const control = this.driverForm.get(field);
         if (this.isEdit) {
           control?.enable(); // Enable fields when in edit mode

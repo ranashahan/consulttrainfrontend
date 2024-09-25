@@ -19,29 +19,46 @@
             />
           </div>
           <div class="col-auto">
-            <h2><i class="fa-regular fa-user me-1"></i>{{ driver.name }}</h2>
+            <h3>
+              <i class="fa-regular fa-user me-1 text-primary"></i
+              >{{ driver.name }}
+            </h3>
             <p>
-              <i class="fa-regular fa-building me-1"></i>
+              <i class="fa-regular fa-building me-1 text-primary"></i>
               {{ getContractosName(driverForm.get("contractorid")?.value) }}
             </p>
             <p>
-              <i class="fa-solid fa-table-list me-1"></i
-              >{{ driverForm.get("formcount")?.value }}
+              <i class="fa-regular fa-id-badge me-1 text-primary"></i
+              >{{ driverForm.get("id")?.value }}
             </p>
-            <p><i class="fa-solid fa-phone me-1"></i>070078601</p>
+            <p>
+              <i class="fa-solid fa-user-tie me-1 text-primary"></i
+              >{{ driverForm.get("createdby")?.value }}
+            </p>
           </div>
           <div class="mb-3 col-auto">
             <button
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary btn-sm"
               type="button"
               (click)="toggleEdit()"
+              *ngIf="!isEdit"
             >
               <i class="far fa-edit"></i>
 
-              {{ isEdit ? "Save" : "Edit" }}
+              {{ "Edit" }}
             </button>
             <button
-              class="btn btn-outline-primary ms-1"
+              *ngIf="isEdit"
+              id="savebtn"
+              class="btn btn-outline-primary btn-sm ms-1"
+              type="submit"
+              (click)="updateDriver(); toggleEdit()"
+            >
+              <i class="fa-regular fa-floppy-disk"></i>
+              Save
+            </button>
+            <button
+              class="btn btn-outline-primary btn-sm ms-1"
               type="button"
               routerLink="/adddriver"
             >
@@ -50,8 +67,8 @@
             </button>
 
             <button
-              type="button"
-              class="btn btn-outline-secondary mx-1"
+              type="reset"
+              class="btn btn-outline-secondary btn-sm mx-1"
               (click)="resetForm()"
               *ngIf="isEdit"
             >
@@ -59,7 +76,7 @@
               Reset
             </button>
             <button
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary btn-sm"
               *ngIf="isEdit"
               (click)="toggleEdit()"
             >
@@ -69,36 +86,6 @@
           </div>
         </div>
         <hr />
-        <div class="mb-3 row border">
-          <label for="id" class="col-sm-1 col-form-label text-primary"
-            >Driver ID:</label
-          >
-          <div class="col-3">
-            <input id="id" class="form-control" formControlName="id" />
-          </div>
-          <label for="dob" class="col-sm-1 col-form-label text-primary"
-            >Date of birth:</label
-          >
-          <div class="col-3">
-            <input
-              id="dob"
-              type="text"
-              class="form-control form-control-sm"
-              formControlName="dob"
-            />
-          </div>
-          <label for="nic" class="col-sm-1 col-form-label text-primary"
-            >NIC Card#:</label
-          >
-          <div class="col-3">
-            <input
-              id="nic"
-              class="form-control form-control-sm"
-              type="text"
-              formControlName="nic"
-            />
-          </div>
-        </div>
         <div class="mb-3 row border">
           <label for="name" class="col-sm-1 col-form-label text-primary"
             >Name:</label
@@ -112,6 +99,42 @@
               formControlName="name"
             />
           </div>
+          <label for="dob" class="col-sm-1 col-form-label text-primary"
+            >Date of birth:</label
+          >
+          <div class="col-3">
+            <input
+              id="dob"
+              type="text"
+              class="form-control form-control-sm"
+              formControlName="dob"
+              placeholder="mm/dd/yyyy"
+            />
+          </div>
+          <label for="age" class="col-sm-1 col-form-label text-primary"
+            >Driver Age:</label
+          >
+          <div class="col-3">
+            <input
+              id="age"
+              class="form-control form-control-sm"
+              formControlName="age"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label for="nic" class="col-sm-1 col-form-label text-primary"
+            >NIC Card#:</label
+          >
+          <div class="col-3">
+            <input
+              id="nic"
+              class="form-control form-control-sm"
+              type="text"
+              formControlName="nic"
+            />
+          </div>
+
           <label for="designation" class="col-sm-1 col-form-label text-primary"
             >Designation:</label
           >
@@ -189,6 +212,7 @@
               name="licenseexpiry"
               class="form-control form-control-sm"
               formControlName="licenseexpiry"
+              placeholder="mm/dd/yyyy"
             />
           </div>
         </div>
@@ -215,6 +239,7 @@
               name="permitissue"
               class="form-control form-control-sm"
               formControlName="permitissue"
+              placeholder="mm/dd/yyyy"
             />
           </div>
           <label for="permitexpiry" class="col-sm-1 col-form-label text-primary"
@@ -227,6 +252,7 @@
               name="permitexpiry"
               class="form-control form-control-sm"
               formControlName="permitexpiry"
+              placeholder="mm/dd/yyyy"
             />
           </div>
         </div>
@@ -281,17 +307,32 @@
               />
             </ng-template>
           </div>
-          <label for="formcount" class="col-sm-1 col-form-label text-primary"
-            >ExistingForm:</label
+          <label for="ddccount" class="col-sm-1 col-form-label text-primary"
+            >DDC Count:</label
           >
           <div class="col-3">
             <input
-              id="formcount"
+              id="ddccount"
               type="number"
-              minlength="0"
-              name="formcount"
+              min="0"
+              name="ddccount"
               class="form-control form-control-sm"
-              formControlName="formcount"
+              formControlName="ddccount"
+            />
+          </div>
+        </div>
+        <div class="mb-3 row border">
+          <label for="experience" class="col-sm-1 col-form-label text-primary"
+            >Experience:</label
+          >
+          <div class="col-3">
+            <input
+              id="experience"
+              type="number"
+              min="0"
+              name="experience"
+              class="form-control form-control-sm"
+              formControlName="experience"
             />
           </div>
         </div>

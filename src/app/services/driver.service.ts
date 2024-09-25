@@ -98,7 +98,8 @@ export class DriverService {
    * @param permitexpiry permit expiry date
    * @param bloodgroupid blood group id
    * @param contractorid contractor id
-   * @param formcount existing forms count
+   * @param ddccount ddc count number
+   * @param experience existing driver experience
    * @returns
    */
   updatedriver(
@@ -116,7 +117,8 @@ export class DriverService {
     permitexpiry: Date,
     bloodgroupid: number,
     contractorid: number,
-    formcount: number
+    ddccount: number,
+    experience: number
   ): Observable<apiDriverModel> {
     console.log('this is my id: ' + name);
     return this.http.put<apiDriverModel>(this.apiURL + id, {
@@ -133,7 +135,8 @@ export class DriverService {
       permitexpiry,
       bloodgroupid,
       contractorid,
-      formcount,
+      ddccount,
+      experience,
       userid: this.authService.getUserID(),
     });
   }
@@ -141,8 +144,20 @@ export class DriverService {
   /**
    * Create Driver
    * @param name name
-   * @param contact contact info
-   * @param address address
+   * @param dob date of birth
+   * @param nic nic
+   * @param licensenumber license number
+   * @param licensetypeid license type
+   * @param licenseexpiry expiry
+   * @param designation designation
+   * @param department department
+   * @param permitnumber permit number
+   * @param permitissue permit issue date
+   * @param permitexpiry permit expiry date
+   * @param bloodgroupid blood group id
+   * @param contractorid contractor id
+   * @param ddccount ddc count number
+   * @param experience existing driver experience
    * @returns response
    */
   createDriver(
@@ -158,7 +173,8 @@ export class DriverService {
     permitissue: Date,
     bloodgroupid: number,
     contractorid: number,
-    formcount: number
+    ddccount: number,
+    experience: number
   ): Observable<apiDriverModel> {
     return this.http
       .post<apiDriverModel>(
@@ -176,7 +192,8 @@ export class DriverService {
           permitissue,
           bloodgroupid,
           contractorid,
-          formcount,
+          ddccount,
+          experience,
           userid: this.authService.getUserID(),
         },
         { observe: 'response' }
