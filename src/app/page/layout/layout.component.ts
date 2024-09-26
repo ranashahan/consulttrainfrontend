@@ -14,7 +14,6 @@ import { CommonModule } from '@angular/common';
 import { Menu } from '../../model/Menu';
 import { DriverService } from '../../services/driver.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
-import { apiDriverModel } from '../../model/Driver';
 
 @Component({
   selector: 'app-layout',

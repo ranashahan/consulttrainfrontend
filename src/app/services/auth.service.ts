@@ -86,8 +86,8 @@ export class AuthService {
   }
   logout(): void {
     const userid = this.getUserID();
-    // console.log('My userid ' + userid);
-    this.http.post(`${this.apiUrl}/logout`, { userid });
+    console.log('My userid ' + userid);
+    this.http.post(`${this.apiUrl}/logout`, { userid }).subscribe();
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('id');

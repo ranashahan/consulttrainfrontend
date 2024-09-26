@@ -1,0 +1,74 @@
+<!-- Driver Search Modal -->
+<div
+  class="modal fade modal-lg"
+  id="driverSearchModal"
+  tabindex="-1"
+  aria-labelledby="driverSearchModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="driverSearchModalLabel">Search Driver</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Search Form -->
+        <form [formGroup]="searchForm">
+          <div class="mb-3">
+            <label for="nic" class="form-label"
+              >Driver National Identity Card #</label
+            >
+            <input
+              type="text"
+              id="nic"
+              formControlName="nic"
+              class="form-control"
+              placeholder="xxxxx-xxxxxxx-x"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="searchDrivers()"
+          >
+            Search
+          </button>
+        </form>
+
+        <!-- Driver Results -->
+        <table class="table mt-3" *ngIf="drivers.length">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>NIC</th>
+              <th>Select</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let driver of drivers">
+              <td>{{ driver.id }}</td>
+              <td>{{ driver.name }}</td>
+              <td>{{ driver.nic }}</td>
+              <td>
+                <button
+                  class="btn btn-success"
+                  (click)="selectDriver(driver.id)"
+                  data-bs-dismiss="modal"
+                >
+                  Select
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
