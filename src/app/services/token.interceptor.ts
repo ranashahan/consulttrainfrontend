@@ -18,6 +18,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
+      console.log('Token Interceptor Error:', error);
       // If 401 Unauthorized, try to refresh the token
       if (error.status === 401 && !req.url.includes('/refreshtoken')) {
         return authService.refreshToken().pipe(
@@ -32,14 +33,21 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
             );
           }),
           catchError((refreshError) => {
+            console.error('Token refresh failed:', refreshError);
             // Handle refresh token errors (logout or redirect to login)
             authService.logout(); // Implement logout logic in your AuthService
             window.location.href = '/login';
-            return throwError(() => new Error(refreshError));
+            const errorMessage =
+              refreshError.error?.message ||
+              refreshError.message ||
+              'Unknown error during token refresh';
+            return throwError(() => new Error(errorMessage));
           })
         );
       }
-      return throwError(() => new Error(error));
+      const errorMessage =
+        error.error?.message || error.message || 'Unknown error occurred';
+      return throwError(() => new Error(errorMessage));
     })
   );
 };

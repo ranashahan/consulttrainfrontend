@@ -111,25 +111,48 @@ export class AdddriverComponent implements OnInit {
         this.formDriver.value.ddccount,
         this.formDriver.value.experience
       )
-      .subscribe((res: any) => {
-        if (res) {
+      .subscribe({
+        next: (data) => {
           if (this.isAlert) {
             this.isAlert = false;
           }
-          this.successMessage = res.message;
+          this.successMessage = data.id.toString();
           this.alertType = 'success';
           this.isAlert = true;
           this.frmReset();
-        } else {
+        },
+        error: (err) => {
+          console.error('Error creating driver:', err.message); // Display the error message
+          alert(err.message); // Optionally show it to the user via an alert or another UI element
+
           if (this.isAlert) {
             this.isAlert = false;
           }
-          this.successMessage =
-            'Something wrong, please contact to system admin';
+          this.successMessage = err.message;
           this.alertType = 'danger';
           this.isAlert = true;
-        }
+        },
       });
-    console.log(this.formDriver.value);
   }
+  //     .subscribe((res: any) => {
+  //       if (res) {
+  //         if (this.isAlert) {
+  //           this.isAlert = false;
+  //         }
+  //         this.successMessage = res.message;
+  //         this.alertType = 'success';
+  //         this.isAlert = true;
+  //         this.frmReset();
+  //       } else {
+  //         if (this.isAlert) {
+  //           this.isAlert = false;
+  //         }
+  //         this.successMessage =
+  //           'Something wrong, please contact to system admin';
+  //         this.alertType = 'danger';
+  //         this.isAlert = true;
+  //       }
+  //     });
+  //   console.log(this.formDriver.value);
+  // }
 }

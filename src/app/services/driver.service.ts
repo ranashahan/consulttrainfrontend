@@ -7,7 +7,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, Observer, map, Observable, throwError } from 'rxjs';
 import { apiDriverModel } from '../model/Driver';
 
 @Injectable({
@@ -200,15 +200,37 @@ export class DriverService {
       )
       .pipe(
         map((response: HttpResponse<any>) => {
+          debugger;
           console.log(`Status: ${response.status}`); // Access status code
           return response.body; // Return response body
         }),
-        catchError(this.handleError)
+        catchError((error) => {
+          // console.log('Full error response:', error); // Log the full error object
+
+          // Extract the message from the error object.
+          let errorMessage = 'An unknown error occurred'; // Fallback message
+
+          // Check if the error has a response body with a message.
+          if (error.error && typeof error.error === 'object') {
+            if (error.error.message) {
+              errorMessage = error.error.message; // Check if error message exists in the error object
+            } else if (error.message) {
+              errorMessage = error.message; // Use general error message if available
+            }
+          } else if (error.message) {
+            errorMessage = error.message; // Use the top-level error message if no nested error object
+          }
+
+          return throwError(() => new Error(errorMessage)); // Pass the correct error message
+        })
       );
   }
 
   // Handle errors in the service
   private handleError(error: HttpErrorResponse) {
+    debugger;
+    console.log(error);
+
     if (error.error instanceof ErrorEvent) {
       // Client-side or network error
       console.error('A client-side error occurred:', error.error.message);

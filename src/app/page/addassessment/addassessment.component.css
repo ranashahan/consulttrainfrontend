@@ -1,0 +1,9 @@
+.table-bordered th,
+.table-bordered td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.form-check {
+  margin-bottom: 10px;
+}
