@@ -1,4 +1,10 @@
 <div class="container-fluid small">
+  <app-alert
+    *ngIf="isAlert"
+    [message]="successMessage"
+    [type]="alertType"
+    [dismissible]="true"
+  ></app-alert>
   <hr />
   <div class="row">
     <div class="col-auto">
@@ -44,15 +50,18 @@
   </button>
 
   <table
-    class="table table-hover table-bordered table-responsive-md"
+    class="table table-hover table-bordered table-responsive-md small"
     id="contractor-table"
   >
-    <thead class="table-light">
+    <thead class="table-info">
       <tr>
         <th>#</th>
-        <th>ID</th>
         <th>Name</th>
-        <th>Contact Number</th>
+        <th>NTN Number</th>
+        <th>Contact Person Name</th>
+        <th>Contact Person Cell#</th>
+        <th>Contact Designation</th>
+        <th>Contact Department</th>
         <th>Address</th>
         <th>Initials</th>
         <th>ClientName</th>
@@ -60,19 +69,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let contractor of paginatedContractors; let i = index">
-        <td class="col-auto">{{ i + 1 }}</td>
-        <td class="col-auto">
-          <div>
-            {{ contractor.id }}
-          </div>
-        </td>
+      @for (contractor of paginatedContractors; track contractor.id) {
+      <tr>
+        <td class="col-auto">{{ $index + 1 }}</td>
         <td class="col-auto">
           <div *ngIf="contractor.isEdit">
             <input
               type="text"
               [(ngModel)]="contractor.name"
-              class="form-control"
+              class="form-control form-control-sm"
             />
           </div>
           <div *ngIf="!contractor.isEdit">
@@ -83,12 +88,60 @@
           <div *ngIf="contractor.isEdit">
             <input
               type="text"
-              [(ngModel)]="contractor.contact"
-              class="form-control"
+              [(ngModel)]="contractor.ntnnumber"
+              class="form-control form-control-sm"
             />
           </div>
           <div *ngIf="!contractor.isEdit">
-            {{ contractor.contact }}
+            {{ contractor.ntnnumber }}
+          </div>
+        </td>
+        <td class="col-auto">
+          <div *ngIf="contractor.isEdit">
+            <input
+              type="text"
+              [(ngModel)]="contractor.contactname"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div *ngIf="!contractor.isEdit">
+            {{ contractor.contactname }}
+          </div>
+        </td>
+        <td class="col-auto">
+          <div *ngIf="contractor.isEdit">
+            <input
+              type="text"
+              [(ngModel)]="contractor.contactnumber"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div *ngIf="!contractor.isEdit">
+            {{ contractor.contactnumber }}
+          </div>
+        </td>
+        <td class="col-auto">
+          <div *ngIf="contractor.isEdit">
+            <input
+              type="text"
+              [(ngModel)]="contractor.contactdesignation"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div *ngIf="!contractor.isEdit">
+            {{ contractor.contactdesignation }}
+          </div>
+        </td>
+        <td class="col-auto">
+          <div *ngIf="contractor.isEdit">
+            <input
+              type="text"
+              [(ngModel)]="contractor.contactdepartment"
+              class="form-control form-control-sm"
+            />
+          </div>
+          <div *ngIf="!contractor.isEdit">
+            {{ contractor.contactdepartment }}
           </div>
         </td>
         <td class="col-auto">
@@ -96,7 +149,7 @@
             <input
               type="text"
               [(ngModel)]="contractor.address"
-              class="form-control"
+              class="form-control form-control-sm"
             />
           </div>
           <div *ngIf="!contractor.isEdit">
@@ -108,7 +161,7 @@
             <input
               type="text"
               [(ngModel)]="contractor.initials"
-              class="form-control-sm"
+              class="form-control form-control-sm"
             />
           </div>
           <div *ngIf="!contractor.isEdit">
@@ -117,11 +170,24 @@
         </td>
         <td class="col-auto">
           <div *ngIf="contractor.isEdit">
-            <select multiple class="form-select" id="clients">
-              <option *ngFor="let group of clients" [value]="group.id">
-                {{ group.name }}
+            <!-- <select multiple class="form-select form-select-sm" id="clients">
+              <option *ngFor="let client of clients" [value]="client.id">
+                {{ client.name }}
               </option>
-            </select>
+            </select> -->
+            <mat-form-field class="small" appearance="outline">
+              <mat-label style="font-size: 12px">Select Clients</mat-label>
+              <mat-select
+                style="font-size: 12px"
+                multiple
+                [formControl]="selectedClientIds"
+              >
+                @for (item of clients; track item.id) {
+                <mat-option style="font-size: 12px" [value]="item.id">
+                  {{ item.name }} </mat-option
+                >}
+              </mat-select>
+            </mat-form-field>
           </div>
           <div *ngIf="!contractor.isEdit">
             {{ contractor.clientnames }}
@@ -136,9 +202,14 @@
                 updateContractor(
                   contractor.id,
                   contractor.name,
-                  contractor.contact,
+                  contractor.ntnnumber,
+                  contractor.contactname,
+                  contractor.contactnumber,
+                  contractor.contactdesignation,
+                  contractor.contactdepartment,
                   contractor.address,
-                  contractor.initials
+                  contractor.initials,
+                  selectedClientIds.value
                 );
                 contractor.isEdit = false
               "
@@ -165,6 +236,11 @@
           </div>
         </td>
       </tr>
+      }@empty {
+      <tr>
+        There are no items.
+      </tr>
+      }
     </tbody>
   </table>
   <nav>
@@ -190,7 +266,7 @@
 
   <!-- Modal -->
   <div
-    class="modal fade"
+    class="modal fade modal-lg"
     id="contractorSaveModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
@@ -198,10 +274,10 @@
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">
-            Add new Contractor
-          </h1>
+        <div class="modal-header bg-info-subtle">
+          <h4 class="modal-title strong text-color" id="exampleModalLabel">
+            Add New Contractor
+          </h4>
           <button
             type="button"
             class="btn-close"
@@ -212,63 +288,148 @@
         <div class="modal-body">
           <form [formGroup]="formSaveContractor">
             <div class="row">
-              <div class="col-12">
+              <div class="col-md-6 ms-auto">
                 <label for="contractorName" class="form-label"
                   >Contractor Full Name</label
                 >
                 <input
                   type="text"
                   name="contractorName"
-                  class="form-control"
+                  class="form-control form-control-sm"
                   id="contractorName"
-                  placeholder="Muhammad Ahmed"
+                  placeholder="Shaheen Frieght"
                   formControlName="name"
                   required
                 />
               </div>
-              <div class="col-12">
-                <label for="contractorMobile" class="form-label"
-                  >Cell Number</label
+              <div class="col-md-6 ms-auto">
+                <label for="ntnnumber" class="form-label">NTN #</label>
+                <input
+                  type="text"
+                  name="ntnnumber"
+                  class="form-control form-control-sm"
+                  id="ntnnumber"
+                  placeholder="NTN-223344 OR SNTN-332233"
+                  formControlName="ntnnumber"
+                />
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-md-6 ms-auto">
+                <label for="contactname" class="form-label"
+                  >Contact Person Name</label
                 >
                 <input
                   type="text"
-                  name="contractorMobile"
-                  class="form-control"
-                  id="contractorMobile"
-                  placeholder="03XX-XXX-XXXX"
-                  formControlName="contact"
+                  name="contactname"
+                  class="form-control form-control-sm"
+                  id="contactname"
+                  placeholder="Muhammad Ahmed"
+                  formControlName="contactname"
                 />
               </div>
-              <div class="col-12">
+              <div class="col-md-6 ms-auto">
+                <label for="contactnumber" class="form-label"
+                  >Contact Person Cell#</label
+                >
+                <input
+                  type="text"
+                  name="contactnumber"
+                  class="form-control form-control-sm"
+                  id="contactnumber"
+                  placeholder="0300-00000000"
+                  formControlName="contactnumber"
+                />
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-md-6 ms-auto">
+                <label for="contactdesignation" class="form-label"
+                  >Contact Designation</label
+                >
+                <input
+                  type="text"
+                  name="contactdesignation"
+                  class="form-control form-control-sm"
+                  id="contactdesignation"
+                  placeholder="General Manager"
+                  formControlName="contactdesignation"
+                />
+              </div>
+              <div class="col-md-6 ms-auto">
+                <label for="contactdepartment" class="form-label"
+                  >Contact Department</label
+                >
+                <input
+                  type="text"
+                  name="contactdepartment"
+                  class="form-control form-control-sm"
+                  id="contactdepartment"
+                  placeholder="HSSEQ & HR"
+                  formControlName="contactdepartment"
+                />
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-md-6 ms-auto">
                 <label for="contractorAddress" class="form-label"
                   >Address</label
                 >
                 <input
                   type="text"
                   name="contractorAddress"
-                  class="form-control"
+                  class="form-control form-control-sm"
                   id="contractorAddress"
                   placeholder="Address"
                   formControlName="address"
                 />
               </div>
-              <div class="col-12">
+              <div class="col-md-6 ms-auto">
                 <label for="contractorInitials" class="form-label"
                   >Initials</label
                 >
                 <input
                   type="text"
                   name="contractorInitials"
-                  class="form-control"
+                  class="form-control form-control-sm"
                   id="contractorInitials"
                   placeholder="RMA"
                   formControlName="initials"
                 />
               </div>
             </div>
+            <div class="row mt-1">
+              <div class="col-12">
+                <!-- <mat-form-field appearance="outline">
+                  <mat-label style="font-size: 12px">Select Clients</mat-label>
+                  <mat-select
+                    style="font-size: 12px"
+                    multiple
+                    formControlName="clientids"
+                  >
+                    @for (item of clients; track item.id) {
+                    <mat-option style="font-size: 12px" [value]="item.id">
+                      {{ item.name }}
+                    </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field> -->
+                <label for="clients" class="form-label">Clients</label>
+                <select
+                  formControlName="clientids"
+                  class="form-select form-select-sm"
+                  multiple
+                  required
+                >
+                  @for (item of clients; track item.id) {
+                  <option [value]="item.id">{{ item.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
           </form>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer bg-info-subtle">
           <button
             type="button"
             class="btn btn-secondary"
@@ -279,14 +440,7 @@
           <button
             type="submit"
             class="btn btn-primary"
-            (click)="
-              createContractor(
-                formSaveContractor.value.name,
-                formSaveContractor.value.contact,
-                formSaveContractor.value.address,
-                formSaveContractor.value.initials
-              )
-            "
+            (click)="createContractor(formSaveContractor.value)"
             [disabled]="formSaveContractor.invalid"
             data-bs-dismiss="modal"
           >

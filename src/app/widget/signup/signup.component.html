@@ -1,0 +1,196 @@
+<div
+  class="modal fade"
+  id="signupModel"
+  tabindex="-1"
+  aria-labelledby="signupModelLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h6 class="modal-title" id="signupModelLabel">SignUp Form</h6>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          data-bs-toggle
+          aria-label="Close"
+        ></button>
+      </div>
+      @if (isAlert) {
+      <app-alert
+        [message]="successMessage"
+        [type]="alertType"
+        [dismissible]="true"
+        (onClosed)="isAlert = false"
+      ></app-alert>
+      }
+
+      <div class="modal-body bg-light">
+        <form [formGroup]="formSignUp">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group required">
+                <label for="name" class="form-label control-label"
+                  >Full Name</label
+                >
+                <input
+                  type="text"
+                  name="name"
+                  class="form-control form-control-sm"
+                  id="name"
+                  placeholder="Muhammad Ahmed"
+                  formControlName="name"
+                  required
+                />
+                @if (formSignUp.controls['name'].errors &&
+                formSignUp.controls['name'].touched) {
+                <span class="text-danger small">This field is required</span>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6">
+              <label for="mobile" class="form-label">Cell Number</label>
+              <input
+                type="text"
+                name="mobile"
+                class="form-control form-control-sm"
+                id="mobile"
+                placeholder="0300-333-3333"
+                formControlName="mobile"
+              />
+            </div>
+            <div class="col-6">
+              <label for="company" class="form-label">Company</label>
+              <input
+                type="text"
+                name="company"
+                class="form-control form-control-sm"
+                id="company"
+                placeholder="Consult & Train"
+                formControlName="company"
+              />
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6">
+              <div class="form-group required">
+                <label for="username" class="form-label control-label"
+                  >UserName</label
+                >
+                <input
+                  type="text"
+                  name="username"
+                  class="form-control form-control-sm"
+                  id="username"
+                  placeholder="muhammad.ahmed"
+                  formControlName="username"
+                  required
+                />
+                @if (formSignUp.controls['username'].errors &&
+                formSignUp.controls['username'].touched) {
+                <span class="text-danger small">This field is required</span>
+                }
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group required">
+                <label for="password" class="form-label control-label"
+                  >Password</label
+                >
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control form-control-sm"
+                  id="password"
+                  placeholder="Password"
+                  formControlName="password"
+                  required
+                />
+                @if (formSignUp.controls['password'].errors &&
+                formSignUp.controls['password'].touched) {
+                <span class="text-danger small">This field is required</span>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-12">
+              <div class="form-group required">
+                <label for="email" class="form-label control-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  name="email"
+                  class="form-control form-control-sm"
+                  id="email"
+                  placeholder="eg@example.com"
+                  formControlName="email"
+                  required
+                />
+                @if (formSignUp.controls['email'].invalid &&
+                formSignUp.controls['email'].touched) {
+                @if(formSignUp.controls['email'].errors?.['email']) {
+                <span class="text-danger small">Email is invalid</span>
+                }@else{
+                <span class="text-danger small">This field is required</span>
+                } }
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6">
+              <label for="designation" class="form-label">Designation</label>
+              <input
+                type="text"
+                name="designation"
+                class="form-control form-control-sm"
+                id="designation"
+                placeholder="Sr. Safety Engr."
+                formControlName="designation"
+              />
+            </div>
+            <div class="col-6">
+              <div class="form-group required">
+                <label for="role" class="form-label control-label">Role</label>
+                <select
+                  id="role"
+                  name="role"
+                  class="form-select form-select-sm"
+                  aria-label="Default select example"
+                  formControlName="role"
+                  required
+                >
+                  <option disabled value="null">Select User Role</option>
+                  @for (item of roles; track $index) {
+                  <option>{{ item }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-warning">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-outline-secondary"
+          [disabled]="formSignUp.invalid"
+          (click)="onSignUp()"
+        >
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

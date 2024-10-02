@@ -19,6 +19,10 @@
   content: "*";
   color: red;
 }
+.required .label::after {
+  content: "*";
+  color: red;
+}
 
 .custom-active {
   /* background-color: transparent !important; Or set a custom background color */

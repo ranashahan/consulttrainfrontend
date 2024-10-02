@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DltypeService } from '../../services/dltype.service';
 import { UtilitiesService } from '../../services/utilities.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   FormControl,
   FormGroup,
@@ -13,7 +13,7 @@ import { apiGenericModel } from '../../model/Generic';
 @Component({
   selector: 'app-dltype',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, DatePipe],
   templateUrl: './dltype.component.html',
   styleUrl: './dltype.component.css',
 })

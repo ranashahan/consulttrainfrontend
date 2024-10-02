@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { apiDriverModel } from '../../model/Driver';
 import { DriverService } from '../../services/driver.service';
 import { BloodgroupService } from '../../services/bloodgroup.service';
 import { DltypeService } from '../../services/dltype.service';
@@ -9,10 +8,7 @@ import { ContractorService } from '../../services/contractor.service';
 import { apiGenericModel } from '../../model/Generic';
 import { UtilitiesService } from '../../services/utilities.service';
 import { apiContractorModel } from '../../model/Contractor';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { AlertComponent } from '../../widget/alert/alert.component';
-import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Component({
   selector: 'app-adddriver',
@@ -88,7 +84,7 @@ export class AdddriverComponent implements OnInit {
     return this.utils.getGenericName(this.dltypes, dltypeId);
   }
 
-  frmReset() {
+  formReset() {
     this.formDriver.reset();
     //this.isAlert = false;
   }
@@ -119,7 +115,7 @@ export class AdddriverComponent implements OnInit {
           this.successMessage = data.id.toString();
           this.alertType = 'success';
           this.isAlert = true;
-          this.frmReset();
+          this.formReset();
         },
         error: (err) => {
           console.error('Error creating driver:', err.message); // Display the error message

@@ -11,11 +11,21 @@ import { apiContractorModel } from '../../model/Contractor';
 import { CommonModule } from '@angular/common';
 import { ClientService } from '../../services/client.service';
 import { apiClientModel } from '../../model/Client';
+import { AlertComponent } from '../../widget/alert/alert.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-contractor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AlertComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
   templateUrl: './contractor.component.html',
   styleUrl: './contractor.component.css',
 })
@@ -25,16 +35,24 @@ export class ContractorComponent implements OnInit {
   clients: apiClientModel[] = [];
   paginatedContractors: any[] = [];
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 25;
   totalPages: number = 0;
   pages: number[] = [];
   filteredContractors: any[] = [];
   searchTerm: string = '';
-  selectedClientIds: number[] = [];
+
+  selectedClientIds = new FormControl();
+  isAlert: boolean = false;
+  alertType = '';
+  successMessage: string = '';
 
   formSaveContractor = new FormGroup({
     name: new FormControl(),
-    contact: new FormControl(),
+    ntnnumber: new FormControl(),
+    contactname: new FormControl(),
+    contactnumber: new FormControl(),
+    contactdesignation: new FormControl(),
+    contactdepartment: new FormControl(),
     address: new FormControl(),
     initials: new FormControl(),
     clientids: new FormControl(),
@@ -51,6 +69,11 @@ export class ContractorComponent implements OnInit {
     this.utils.setTitle('Contractor');
     this.getAll();
     this.getClients();
+    //this.selectedClientIds.setValue([1, 4]);
+  }
+
+  Selected(clientId: string[]) {
+    this.selectedClientIds.setValue(clientId);
   }
 
   getAll() {
@@ -69,33 +92,81 @@ export class ContractorComponent implements OnInit {
   updateContractor(
     id: number,
     name: string,
-    contact: string,
+    ntnnumber: string,
+    contactname: string,
+    contactnumber: string,
+    contactdesignation: string,
+    contactdepartment: string,
     address: string,
-    initials: string
+    initials: string,
+    clientids: string[]
   ) {
-    // console.log('this is my id' + id, 'this is my assessor' + name);
-    this.contractorService
-      .updateContractor(id, name, contact, address, initials)
-      .subscribe((res: any) => {
-        alert('saved successfully.');
-      });
+    debugger;
+    if (clientids.length < 1) {
+      if (this.isAlert) {
+        this.isAlert = false;
+      }
+      this.successMessage =
+        'Client Ids are mandatory, please associate some clients with contractor';
+      this.alertType = 'danger';
+      this.isAlert = true;
+    } else {
+      this.contractorService
+        .updateContractor(
+          id,
+          name,
+          ntnnumber,
+          contactname,
+          contactnumber,
+          contactdesignation,
+          contactdepartment,
+          address,
+          initials,
+          clientids
+        )
+        .subscribe((res: any) => {
+          if (this.isAlert) {
+            this.isAlert = false;
+          }
+          this.successMessage = ' Contractor Saved Successfully';
+          this.alertType = 'success';
+          this.isAlert = true;
+          this.formRest();
+          this.getAll();
+        });
+    }
   }
 
-  createContractor(
-    name: string,
-    contact: string,
-    address: string,
-    initials: string
-  ) {
-    this.contractorService
-      .createContractor(name, contact, address, initials)
-      .subscribe((res: any) => {
-        onmessage = res.message;
-        alert(onmessage);
-      });
+  /**
+   * this method for only create contractor
+   * @param {object} object of formContractor
+   */
+  createContractor(obj: any) {
+    this.contractorService.createContractor(obj).subscribe({
+      next: (result) => {
+        if (this.isAlert) {
+          this.isAlert = false;
+        }
+        this.successMessage = result.message;
+        this.alertType = 'success';
+        this.isAlert = true;
+        this.formRest();
+        this.getAll();
+      },
+      error: (err) => {
+        console.error('Error creating contractor:', err.message);
+        if (this.isAlert) {
+          this.isAlert = false;
+        }
+        this.successMessage = err.message;
+        this.alertType = 'danger';
+        this.isAlert = true;
+      },
+    });
   }
 
   onEdit(contractor: any) {
+    this.Selected(contractor.clientids.split(',').map(Number));
     this.contractors.forEach((element: apiContractorModel) => {
       element.isEdit = false;
     });

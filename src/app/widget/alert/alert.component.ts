@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
-  OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 
@@ -20,12 +21,15 @@ export class AlertComponent implements OnChanges {
   @Input() dismissible: boolean = true; // Whether the alert can be dismissed
   @Input() timeout: number | null = 5000; // Optional timeout for auto-dismiss
 
+  @Output() onClosed = new EventEmitter<void>();
   visible: boolean = true;
+  alertId: number = 0; // Unique identifier for each alert instance
 
   ngOnInit(): void {
-    if (this.timeout) {
-      setTimeout(() => this.closeAlert(), this.timeout);
-    }
+    // if (this.timeout) {
+    //   setTimeout(() => this.closeAlert(), this.timeout);
+    // }
+    this.resetAlert();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['message'] || changes['type']) {
@@ -34,13 +38,18 @@ export class AlertComponent implements OnChanges {
   }
 
   resetAlert(): void {
+    this.alertId++;
     this.visible = true;
     if (this.timeout) {
-      setTimeout(() => this.closeAlert(), this.timeout);
+      setTimeout(() => this.closeAlert(this.alertId), this.timeout);
     }
   }
 
-  closeAlert(): void {
-    this.visible = false;
+  closeAlert(id: number): void {
+    if (this.alertId === id) {
+      // Ensure closing the correct alert
+      this.visible = false;
+      this.onClosed.emit();
+    }
   }
 }

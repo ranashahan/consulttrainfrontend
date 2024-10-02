@@ -36,37 +36,37 @@ export class ContractorService {
   updateContractor(
     id: number,
     name: string,
-    contact: string,
+    ntnnumber: string,
+    contactname: string,
+    contactnumber: string,
+    contactdesignation: string,
+    contactdepartment: string,
     address: string,
-    initials: string
+    initials: string,
+    clientids: string[]
   ): Observable<apiContractorModel> {
     return this.http.put<apiContractorModel>(this.apiURL + id, {
       name,
-      contact,
+      ntnnumber,
+      contactname,
+      contactnumber,
+      contactdesignation,
+      contactdepartment,
       address,
       initials,
+      clientids,
       userid: this.authService.getUserID(),
     });
   }
 
   /**
    * Create contractor
-   * @param name name
-   * @param contact contact info
-   * @param address address
+   * @param {object} obj which contain all contractor fields
    * @returns response
    */
-  createContractor(
-    name: string,
-    contact: string,
-    address: string,
-    initials: string
-  ): Observable<apiContractorModel> {
+  createContractor(obj: apiContractorModel): Observable<apiContractorModel> {
     return this.http.post<apiContractorModel>(this.apiURL + 'create', {
-      name,
-      contact,
-      address,
-      initials,
+      obj,
       userid: this.authService.getUserID(),
     });
   }

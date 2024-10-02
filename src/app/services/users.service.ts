@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class UsersService {
-  private apiURL = `${environment.apiUrl}users/`;
+  private readonly apiURL = `${environment.apiUrl}users/`;
   constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<apiUserModel> {
@@ -20,11 +20,12 @@ export class UsersService {
   }
 
   updateUserByID(
-    id: string,
+    id: number,
     name: string,
     mobile: string,
     company: string,
     designation: string,
+    imagepath: string,
     role: string
   ): Observable<apiUserModel> {
     return this.http.put<apiUserModel>(this.apiURL + id, {
@@ -32,31 +33,15 @@ export class UsersService {
       mobile,
       company,
       designation,
+      imagepath,
       role,
     });
   }
 
-  createUser(
-    username: any,
-    email: any,
-    password: any,
-    name: any,
-    mobile: any,
-    profilepic: any,
-    company: any,
-    designation: any,
-    role: any
-  ): Observable<apiUserModel> {
+  createUser(obj: apiUserModel): Observable<apiUserModel> {
+    console.log(obj);
     return this.http.post<apiUserModel>(this.apiURL + 'register', {
-      username,
-      email,
-      password,
-      name,
-      mobile,
-      profilepic,
-      company,
-      designation,
-      role: role,
+      obj,
     });
   }
 }
