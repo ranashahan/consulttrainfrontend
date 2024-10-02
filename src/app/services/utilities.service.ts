@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as XLSX from 'xlsx';
 import { apiGenericModel } from '../model/Generic';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -54,5 +55,26 @@ export class UtilitiesService {
     // Convert MM/DD/YYYY format to YYYY-MM-DD
     const [month, day, year] = date.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  bloodGroups(): string[] {
+    return ['A-ve', 'A+ve', 'B-ve', 'B+ve', 'O+ve', 'O-ve', 'AB-ve', 'AB+ve'];
+  }
+  visuals(): string[] {
+    return ['Normal', 'Abnormal', 'Glasses Prescribed'];
+  }
+
+  roles(): string[] {
+    return ['admin', 'guest', 'member', 'manager', 'staff'];
+  }
+
+  formatValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const value = control.value;
+    if (!value) {
+      return null; // No validation needed if the field is empty
+    }
+
+    const formatRegex = /^\d{5}-\d{7}-\d{1}$/;
+    return formatRegex.test(value) ? null : { invalidFormat: true };
   }
 }

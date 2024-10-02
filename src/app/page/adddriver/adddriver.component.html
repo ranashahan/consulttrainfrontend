@@ -1,11 +1,13 @@
 <div class="container-fluid">
   <!-- Use alert component with a success message -->
+  @if (isAlert) {
   <app-alert
-    *ngIf="isAlert"
     [message]="successMessage"
     [type]="alertType"
     [dismissible]="true"
+    (onClosed)="isAlert = false"
   ></app-alert>
+  }
   <hr />
   <div class="row">
     <div class="col-auto">
@@ -213,7 +215,7 @@
             <button
               type="button"
               class="btn btn-outline-secondary"
-              (click)="frmReset()"
+              (click)="formReset()"
             >
               Reset
             </button>

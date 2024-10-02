@@ -19,6 +19,7 @@ export class AuthService {
         tap((tokens) => {
           localStorage?.setItem('email', tokens.email);
           localStorage?.setItem('id', tokens.id);
+          localStorage?.setItem('username', tokens.username);
           localStorage?.setItem('role', tokens.role);
           this.storeTokens(tokens.accessToken, tokens.refreshToken);
         }),
@@ -43,15 +44,14 @@ export class AuthService {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
   }
-  // // Store tokens in localStorage or sessionStorage
-  // private storeMisc(id: string, email: string): void {
-  //   localStorage.setItem('id', id);
-  //   localStorage.setItem('email', email);
-  // }
 
   // Retrieve access token from storage
   getAccessToken(): string | null {
     return localStorage.getItem('accessToken');
+  }
+  // Retrieve username from storage
+  getUsername(): string | null {
+    return localStorage.getItem('username');
   }
   // Retrieve userid from storage
   getUserID(): string {

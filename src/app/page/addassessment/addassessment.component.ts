@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DriversearchComponent } from '../../widget/driversearch/driversearch.component';
-declare var bootstrap: any;
 @Component({
   selector: 'app-addassessment',
   standalone: true,

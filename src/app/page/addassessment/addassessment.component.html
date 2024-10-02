@@ -30,6 +30,7 @@
   <div
     *ngFor="let category of categoriesArray.controls; let i = index"
     [formGroup]="$any(category)"
+    class="border"
   >
     <div class="form-check">
       <input
@@ -46,7 +47,7 @@
     <!-- Show assessments if the category is selected -->
     <div *ngIf="category.get('selected')?.value" class="mt-2">
       <table class="table table-bordered">
-        <thead>
+        <thead class="table-warning">
           <tr>
             <th>Assessment</th>
             <th>Initial Assessment</th>
@@ -61,7 +62,9 @@
             "
             [formGroup]="$any(assessmentControl)"
           >
-            <td>{{ assessmentControl.get("name")?.value }}</td>
+            <td class="text-sm-end">
+              {{ assessmentControl.get("name")?.value }}
+            </td>
             <td>
               <div
                 class="form-check form-check-inline"

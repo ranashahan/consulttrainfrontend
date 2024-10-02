@@ -24,6 +24,7 @@ import { VisualComponent } from './page/visual/visual.component';
 import { FormComponent } from './page/form/form.component';
 import { UnauthorizedComponent } from './page/unauthorized/unauthorized.component';
 import { ClientComponent } from './page/client/client.component';
+import { GuestdashboardComponent } from './page/guestdashboard/guestdashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -37,6 +38,12 @@ export const routes: Routes = [
         component: DashboardComponent,
         canActivate: [authGuard],
         data: { roles: ['admin', 'manager', 'staff', 'member'] },
+      },
+      {
+        path: 'gdashboard',
+        component: GuestdashboardComponent,
+        canActivate: [authGuard],
+        data: { roles: ['guest'] },
       },
       {
         path: 'alldrivers',

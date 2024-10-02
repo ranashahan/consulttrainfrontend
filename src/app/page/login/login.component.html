@@ -15,7 +15,6 @@
         Please get log-in for access Consult & Train Software.
       </h4>
     </div>
-    <!-- <div *ngIf="formData.errors?.unauthenticated"> -->
 
     <form [formGroup]="formLogin" (ngSubmit)="onLogin()">
       <div class="form">
@@ -25,7 +24,15 @@
           class="form-field animation a3"
           placeholder="Email Address"
           formControlName="email"
+          required
         />
+        @if (formLogin.controls['email'].invalid &&
+        formLogin.controls['email'].touched) {
+        @if(formLogin.controls['email'].errors?.['email']) {
+        <span class="text-danger small">Email is invalid</span>
+        }@else{
+        <span class="text-danger small">This field is required</span>
+        } }
         <input
           id="pwd"
           type="password"
@@ -34,6 +41,10 @@
           formControlName="password"
           required
         />
+        @if (formLogin.controls['password'].errors &&
+        formLogin.controls['password'].touched) {
+        <span class="text-danger small">This field is required</span>
+        }
         <button
           type="submit"
           [disabled]="formLogin.invalid"
@@ -50,9 +61,7 @@
       <div class="col-6">
         <button
           class="btn btn-outline-primary fs-7"
-          data-bs-toggle="modal"
-          data-bs-target="#signupModel"
-          (click)="formRest()"
+          (click)="openSignUpModal()"
         >
           SignUp Form
         </button>
@@ -62,194 +71,5 @@
   <div class="right"></div>
 
   <!-- Modal -->
-  <div
-    class="modal fade"
-    id="signupModel"
-    tabindex="-1"
-    aria-labelledby="signupModel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-warning">
-          <h1 class="modal-title fs-5" id="signupModel">SignUp Form</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body bg-light">
-          <div *ngIf="bSuccess" class="bg-warning">
-            <div class="text-success text-lg-center">{{ successMsg }}</div>
-          </div>
-          <form [formGroup]="formSignUp">
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group required">
-                  <label for="name" class="form-label control-label"
-                    >Full Name</label
-                  >
-                  <input
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    id="name"
-                    placeholder="Muhammad Ahmed"
-                    formControlName="name"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <label for="mobile" class="form-label">Cell Number</label>
-                <input
-                  type="text"
-                  name="mobile"
-                  class="form-control"
-                  id="mobile"
-                  placeholder="0300-333-3333"
-                  formControlName="mobile"
-                />
-              </div>
-              <div class="col-6">
-                <label for="company" class="form-label">Company</label>
-                <input
-                  type="text"
-                  name="company"
-                  class="form-control"
-                  id="company"
-                  placeholder="Consult & Train"
-                  formControlName="company"
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group required">
-                  <label for="username" class="form-label control-label"
-                    >UserName</label
-                  >
-                  <input
-                    type="text"
-                    name="username"
-                    class="form-control"
-                    id="username"
-                    placeholder="muhammad.ahmed"
-                    formControlName="username"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group required">
-                  <label for="password" class="form-label control-label"
-                    >Password</label
-                  >
-                  <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Password"
-                    formControlName="password"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group required">
-                  <label for="email" class="form-label control-label"
-                    >Email Address</label
-                  >
-                  <input
-                    type="email"
-                    name="email"
-                    class="form-control"
-                    id="email"
-                    placeholder="eg@example.com"
-                    formControlName="email"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                <label for="profilepic" class="form-label"
-                  >Profile Picture</label
-                >
-                <input
-                  type="file"
-                  name="profilepic"
-                  class="form-control"
-                  id="profilepic"
-                  placeholder="Sr. Safety Engr."
-                  formControlName="profilepic"
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <label for="designation" class="form-label">Designation</label>
-                <input
-                  type="text"
-                  name="designation"
-                  class="form-control"
-                  id="designation"
-                  placeholder="Sr. Safety Engr."
-                  formControlName="designation"
-                />
-              </div>
-              <div class="col-6">
-                <div class="form-group required">
-                  <label for="role" class="form-label control-label"
-                    >Role</label
-                  >
-                  <select
-                    id="role"
-                    name="role"
-                    class="form-select"
-                    aria-label="Default select example"
-                    formControlName="role"
-                    required
-                  >
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="member">Member</option>
-                    <option value="staff">Staff</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer bg-warning">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            type="submit"
-            class="btn btn-outline-secondary"
-            [disabled]="formSignUp.invalid"
-            (click)="onSignUp()"
-          >
-            Save changes
-          </button>
-          <div class="spinner-border" role="status" *ngIf="bLoader">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-signup #signupModel></app-signup>
 </div>

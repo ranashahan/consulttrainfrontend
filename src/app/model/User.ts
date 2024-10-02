@@ -5,17 +5,11 @@ export interface apiUserModel {
   password: string;
   name: string;
   mobile: string;
-  profilepic: Profilepic;
   company: string;
   designation: string;
+  imagepath: string;
   role: string;
   createdby: string;
   modifiedby: string;
-  createdDate: string;
-  modifiedDate: string;
-}
-
-interface Profilepic {
-  type: Blob;
-  data: any[];
+  message: string;
 }
