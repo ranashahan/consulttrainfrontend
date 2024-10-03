@@ -9,6 +9,7 @@ import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
 import { AlertComponent } from '../alert/alert.component';
 import { UtilitiesService } from '../../services/utilities.service';
+import { ROLES } from '../../model/Constants';
 declare var bootstrap: any;
 @Component({
   selector: 'app-userprofile',
@@ -52,6 +53,9 @@ export class UserprofileComponent {
         this.formUser.patchValue(res[0]);
         // this.username = res[0].username;
         this.userid = res[0].userid;
+        if (res[0].role == ROLES.GUEST) {
+          this.formUser.get('role')?.disable();
+        }
       });
   }
 

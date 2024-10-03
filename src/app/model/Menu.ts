@@ -58,6 +58,12 @@ export const Menu = {
           roles: ['admin', 'manager'],
           icon: 'fa-solid fa-database me-1',
         },
+        {
+          name: 'Assessments Configure',
+          path: '/assessmentsconfigure',
+          roles: ['admin', 'manager'],
+          icon: 'fa-solid fa-wrench me-1',
+        },
       ],
     },
     {

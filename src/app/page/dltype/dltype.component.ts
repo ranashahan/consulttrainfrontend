@@ -60,7 +60,7 @@ export class DltypeComponent implements OnInit {
   executeExport() {
     this.utils.exportToExcel('dltype-table', 'Consult-dltypes-export');
   }
-  formRest() {
+  formReset() {
     this.formSaveDLType.reset();
   }
 }

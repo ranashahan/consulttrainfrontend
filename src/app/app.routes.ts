@@ -25,6 +25,10 @@ import { FormComponent } from './page/form/form.component';
 import { UnauthorizedComponent } from './page/unauthorized/unauthorized.component';
 import { ClientComponent } from './page/client/client.component';
 import { GuestdashboardComponent } from './page/guestdashboard/guestdashboard.component';
+import { ConfigureassessmentComponent } from './page/configureassessment/configureassessment.component';
+import { MastercategoryComponent } from './widget/mastercategory/mastercategory.component';
+import { SlavecategoryComponent } from './widget/slavecategory/slavecategory.component';
+import { ActivitiesComponent } from './widget/activities/activities.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -88,14 +92,14 @@ export const routes: Routes = [
         data: { roles: ['admin', 'manager'] },
       },
       {
-        path: 'trainer',
-        component: TrainersComponent,
+        path: 'assessmentsconfigure',
+        component: ConfigureassessmentComponent,
         canActivate: [authGuard],
         data: { roles: ['admin', 'manager'] },
       },
       {
-        path: 'trainee',
-        component: TraineeComponent,
+        path: 'trainer',
+        component: TrainersComponent,
         canActivate: [authGuard],
         data: { roles: ['admin', 'manager'] },
       },
@@ -156,12 +160,6 @@ export const routes: Routes = [
       {
         path: 'visual',
         component: VisualComponent,
-        canActivate: [authGuard],
-        data: { roles: ['admin', 'manager'] },
-      },
-      {
-        path: 'form',
-        component: FormComponent,
         canActivate: [authGuard],
         data: { roles: ['admin', 'manager'] },
       },
