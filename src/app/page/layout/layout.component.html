@@ -1,11 +1,15 @@
 <nav class="navbar navbar-expand-lg bg-gradient1 p-1">
   <div class="container-fluid">
-    <!-- Brand and Search (Left Aligned) -->
     <div class="d-flex align-items-center">
-      <!-- Brand Logo (Smaller size) -->
+      @if (userRoles[0]==='guest') {
+      <a class="navbar-brand m-0 p-0" routerLink="/gdashboard">
+        <img src="img/logo.png" alt="Brand" width="30" height="24" />
+      </a>
+      }@else {
       <a class="navbar-brand m-0 p-0" routerLink="/dashboard">
         <img src="img/logo.png" alt="Brand" width="30" height="24" />
       </a>
+      }
       <!-- AJAX Search Field -->
       <form
         class="d-flex ms-2 position-relative"
@@ -74,6 +78,17 @@
       <ul class="navbar-nav ms-auto small">
         <!-- Smaller text and right aligned -->
         <li class="nav-item">
+          @if (userRoles[0]==='guest') {
+          <a
+            class="nav-link text-light"
+            routerLink="/gdashboard"
+            routerLinkActive="custom-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            aria-current="page"
+          >
+            <i class="fa-solid fa-house fa-flip me-1"></i>Dashboard
+          </a>
+          }@else {
           <a
             class="nav-link text-light"
             routerLink="/dashboard"
@@ -83,6 +98,7 @@
           >
             <i class="fa-solid fa-house fa-flip me-1"></i>Dashboard
           </a>
+          }
         </li>
         <ng-container *ngFor="let menu of dropdownMenus">
           <li class="nav-item dropdown" *ngIf="canAccess(menu.roles)">
@@ -126,12 +142,22 @@
             aria-labelledby="navbarDropdown"
           >
             <li>
+              @if (userRoles[0]==='guest') {
+              <a
+                class="dropdown-item text-primary small"
+                routerLink="/gdashboard"
+                (click)="openUserProfileModal()"
+                ><i class="fa-solid fa-user me-1"></i>Profile
+              </a>
+              }@else{
               <a
                 class="dropdown-item text-primary small"
                 routerLink="/dashboard"
                 (click)="openUserProfileModal()"
                 ><i class="fa-solid fa-user me-1"></i>Profile
               </a>
+              }
+
               <hr class="dropdown-divider" />
             </li>
             <li>

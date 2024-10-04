@@ -48,7 +48,6 @@ export class LoginComponent implements OnInit {
         this.formLogin.value.password ?? 'empty'
       )
       .subscribe((res: any) => {
-        console.log(res);
         if (res.role == ROLES.GUEST) {
           this.router.navigateByUrl('gdashboard');
         } else {

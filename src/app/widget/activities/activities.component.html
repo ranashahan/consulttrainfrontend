@@ -1,0 +1,238 @@
+<select
+  class="form-select mt-2"
+  [(ngModel)]="selectedCategoryId"
+  (change)="getByScondaryID(selectedCategoryId)"
+>
+  @for (category of scondaryCategories; track $index) {
+  <option [value]="category.id">{{ category.name }}</option>
+  }
+</select>
+
+<button
+  class="btn btn-sm btn-outline-secondary float-end mt-2"
+  (click)="executeExport()"
+  title="Export to Excel"
+>
+  <i class="fa-solid fa-file-excel me-1"></i>Export
+</button>
+<button
+  class="btn btn-sm btn-outline-secondary float-end me-1 mt-2"
+  title="Add new"
+  data-bs-toggle="modal"
+  data-bs-target="#ActivitySaveModal"
+  (click)="formReset()"
+>
+  <i class="fa-solid fa-plus me-1"></i>Add
+</button>
+<table
+  class="table table-hover table-bordered table-responsive-md"
+  id="activity-table"
+>
+  <thead class="table-light">
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Initials</th>
+      <th>ScondaryCategory</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of activities; let i = index">
+      <td class="col col-lg-1">{{ i + 1 }}</td>
+      <td>
+        <div *ngIf="item.isEdit">
+          <input type="text" [(ngModel)]="item.name" class="form-control" />
+        </div>
+        <div *ngIf="!item.isEdit">
+          {{ item.name }}
+        </div>
+      </td>
+      <td>
+        <div *ngIf="item.isEdit">
+          <input
+            type="text"
+            [(ngModel)]="item.description"
+            class="form-control"
+          />
+        </div>
+        <div *ngIf="!item.isEdit">
+          {{ item.description }}
+        </div>
+      </td>
+      <td>
+        <div *ngIf="item.isEdit">
+          <input type="text" [(ngModel)]="item.initials" class="form-control" />
+        </div>
+        <div *ngIf="!item.isEdit">
+          {{ item.initials }}
+        </div>
+      </td>
+      <!-- <td>
+        <div *ngIf="item.isEdit">
+          <input
+            type="text"
+            [(ngModel)]="item.mastercategoryid"
+            class="form-control"
+          />
+        </div>
+        <div *ngIf="!item.isEdit">
+          {{ item.mastercategoryid }}
+        </div>
+      </td> -->
+      <td>
+        <div *ngIf="item.isEdit">
+          <select class="form-select" [(ngModel)]="item.slavecategoryid">
+            <option
+              *ngFor="let category of scondaryCategories"
+              [value]="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="!item.isEdit">
+          {{ getSlaveCategoryName(item.slavecategoryid) }}
+        </div>
+      </td>
+      <td class="col col-lg-2">
+        <div *ngIf="item.isEdit">
+          <button
+            class="btn btn-sm btn-outline-primary"
+            (click)="
+              update(
+                item.id,
+                item.name,
+                item.description,
+                item.initials,
+                item.slavecategoryid
+              );
+              item.isEdit = false
+            "
+          >
+            <i class="fa-regular fa-floppy-disk"></i>
+            save
+          </button>
+          <button
+            class="btn btn-sm btn-outline-primary ms-1"
+            (click)="item.isEdit = false"
+          >
+            <i class="fa-regular fa-rectangle-xmark"></i>
+            cancel
+          </button>
+        </div>
+        <div *ngIf="!item.isEdit">
+          <button class="btn btn-sm btn-outline-primary" (click)="onEdit(item)">
+            <i class="far fa-edit"></i>
+            edit
+          </button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="ActivitySaveModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New Activity</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formActivity">
+          <div class="row">
+            <div class="col-12">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                name="name"
+                class="form-control"
+                id="name"
+                placeholder="Control of speed"
+                formControlName="name"
+                required
+              />
+            </div>
+            <div class="col-12">
+              <label for="description" class="form-label mt-1"
+                >Description</label
+              >
+              <input
+                type="text"
+                name="description"
+                class="form-control"
+                id="description"
+                placeholder="Activity Description"
+                formControlName="description"
+              />
+            </div>
+            <div class="col-12">
+              <label for="initials" class="form-label mt-1">Initials</label>
+              <input
+                type="text"
+                name="initials"
+                class="form-control"
+                id="initials"
+                placeholder="A"
+                formControlName="initials"
+              />
+            </div>
+            <div class="col-12">
+              <label for="secondarycategory" class="form-label mt-1"
+                >Secondary Category</label
+              >
+              <select
+                name="secondarycategory"
+                class="form-select"
+                id="secondarycategory"
+                formControlName="slavecategoryid"
+                required
+              >
+                <option disabled value="null">Select Secondary Category</option>
+                @for (item of scondaryCategories; track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          (click)="
+            create(
+              formActivity.value.name,
+              formActivity.value.description,
+              formActivity.value.initials,
+              formActivity.value.slavecategoryid
+            )
+          "
+          [disabled]="formActivity.invalid"
+          data-bs-dismiss="modal"
+        >
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
