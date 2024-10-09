@@ -1,122 +1,212 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { UtilitiesService } from '../../services/utilities.service';
+import {
+  ApexChart,
+  ApexAxisChartSeries,
+  ApexDataLabels,
+  ApexStroke,
+  ApexTitleSubtitle,
+  ApexXAxis,
+  ApexYAxis,
+  ApexFill,
+  ApexPlotOptions,
+  ApexLegend,
+  NgApexchartsModule,
+  ChartComponent,
+  ApexResponsive,
+  ApexNonAxisChartSeries,
+} from 'ng-apexcharts';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, CanvasJSAngularChartsModule],
+  imports: [CommonModule, RouterOutlet, NgApexchartsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-  constructor(private utils: UtilitiesService) {}
-
-  ngOnInit() {
-    this.utils.setTitle('Dashboard');
+  @ViewChild('chart') chart!: ChartComponent;
+  public trendCOpt: Partial<ChartOptions>;
+  public locationCOpt: Partial<ChartOptions>;
+  public trainerCOpt: Partial<ChartOptions>;
+  constructor(private Utils: UtilitiesService) {
+    this.locationCOpt = {
+      series: [
+        {
+          data: [
+            {
+              x: 'Karachi',
+              y: 218,
+            },
+            {
+              x: 'Islamaba',
+              y: 149,
+            },
+            {
+              x: 'Sawan',
+              y: 184,
+            },
+            {
+              x: 'Naimat',
+              y: 55,
+            },
+            {
+              x: 'Meher',
+              y: 84,
+            },
+            {
+              x: 'Khaskheli',
+              y: 31,
+            },
+            {
+              x: 'Kadanwari',
+              y: 70,
+            },
+            {
+              x: 'Dhabi',
+              y: 30,
+            },
+            {
+              x: 'Kausar',
+              y: 44,
+            },
+            {
+              x: 'Matli',
+              y: 68,
+            },
+            {
+              x: 'Tando Adam',
+              y: 28,
+            },
+          ],
+        },
+      ],
+      legend: {
+        show: false,
+      },
+      chart: {
+        height: 350,
+        type: 'treemap',
+      },
+      title: {
+        text: 'Locations',
+        align: 'center',
+      },
+      colors: [
+        '#3B93A5',
+        '#F7B844',
+        '#ADD8C7',
+        '#EC3C65',
+        '#CDD7B6',
+        '#C1F666',
+        '#D43F97',
+        '#1E5D8C',
+        '#421243',
+        '#7F94B0',
+        '#EF6537',
+        '#C0ADDB',
+      ],
+      plotOptions: {
+        treemap: {
+          distributed: true,
+          enableShades: false,
+        },
+      },
+    };
+    this.trendCOpt = {
+      series: [
+        {
+          name: 'Revenue',
+          data: [45000, 56000, 62000, 70000, 75000, 78000],
+        },
+      ],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: false,
+        },
+      },
+      xaxis: {
+        categories: ['January', 'February', 'March', 'April', 'May', 'June'],
+      },
+      yaxis: {
+        title: {
+          text: 'Revenue (USD)',
+        },
+      },
+      title: {
+        text: 'Monthly Revenue Trend',
+        align: 'left',
+      },
+      colors: ['#008FFB'],
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: 'smooth',
+      },
+      fill: {
+        type: 'solid',
+      },
+    };
+    this.trainerCOpt = {
+      series1: [44, 55, 13],
+      chart: {
+        type: 'pie',
+      },
+      labels: ['JBL', 'MH', 'MZ'],
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: 'top',
+            },
+          },
+        },
+      ],
+    };
   }
 
-  chartOptions = {
-    title: {
-      text: 'Basic Column Chart in Angular',
-    },
-    data: [
-      {
-        type: 'column',
-        dataPoints: [
-          { label: 'Apple', y: 10 },
-          { label: 'Orange', y: 15 },
-          { label: 'Banana', y: 25 },
-          { label: 'Mango', y: 30 },
-          { label: 'Grape', y: 28 },
-        ],
-      },
-    ],
-  };
-  chart: any;
+  ngOnInit() {
+    this.Utils.setTitle('Dashboard');
+  }
 
-  chartOption1 = {
-    animationEnabled: true,
-    theme: 'light2',
-    title: {
-      text: 'Revenue Analysis',
-    },
-    axisY: {
-      title: 'Number of Orders',
-      includeZero: true,
-    },
-    axisY2: {
-      title: 'Total Revenue',
-      includeZero: true,
-      labelFormatter: (e: any) => {
-        var suffixes = ['', 'K', 'M', 'B'];
+  public generateData(count: number, yrange: { max: number; min: number }) {
+    var i = 0;
+    var series = [];
+    while (i < count) {
+      var x = 'w' + (i + 1).toString();
+      var y =
+        Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-        var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
-        if (order > suffixes.length - 1) order = suffixes.length - 1;
-
-        var suffix = suffixes[order];
-        return '$' + e.value / Math.pow(1000, order) + suffix;
-      },
-    },
-    toolTip: {
-      shared: true,
-    },
-    legend: {
-      cursor: 'pointer',
-      itemclick: function (e: any) {
-        if (
-          typeof e.dataSeries.visible === 'undefined' ||
-          e.dataSeries.visible
-        ) {
-          e.dataSeries.visible = false;
-        } else {
-          e.dataSeries.visible = true;
-        }
-        e.chart.render();
-      },
-    },
-    data: [
-      {
-        type: 'column',
-        showInLegend: true,
-        name: 'Revenue',
-        axisYType: 'secondary',
-        yValueFormatString: '$#,###',
-        dataPoints: [
-          { label: 'Jan', y: 250000 },
-          { label: 'Feb', y: 431000 },
-          { label: 'Mar', y: 646000 },
-          { label: 'Apr', y: 522000 },
-          { label: 'May', y: 464000 },
-          { label: 'Jun', y: 470000 },
-          { label: 'Jul', y: 534000 },
-          { label: 'Aug', y: 407000 },
-          { label: 'Sep', y: 484000 },
-          { label: 'Oct', y: 465000 },
-          { label: 'Nov', y: 424000 },
-          { label: 'Dec', y: 231000 },
-        ],
-      },
-      {
-        type: 'spline',
-        showInLegend: true,
-        name: 'No of Orders',
-        dataPoints: [
-          { label: 'Jan', y: 372 },
-          { label: 'Feb', y: 412 },
-          { label: 'Mar', y: 572 },
-          { label: 'Apr', y: 224 },
-          { label: 'May', y: 246 },
-          { label: 'Jun', y: 601 },
-          { label: 'Jul', y: 642 },
-          { label: 'Aug', y: 590 },
-          { label: 'Sep', y: 527 },
-          { label: 'Oct', y: 273 },
-          { label: 'Nov', y: 251 },
-          { label: 'Dec', y: 331 },
-        ],
-      },
-    ],
-  };
+      series.push({
+        x: x,
+        y: y,
+      });
+      i++;
+    }
+    return series;
+  }
 }
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  series1: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  dataLabels: ApexDataLabels;
+  fill: ApexFill;
+  stroke: ApexStroke;
+  title: ApexTitleSubtitle;
+  colors: string[];
+  plotOptions: ApexPlotOptions;
+  legend: ApexLegend;
+  responsive: ApexResponsive[];
+  labels: any;
+};

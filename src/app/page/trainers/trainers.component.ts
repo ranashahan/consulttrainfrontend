@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -25,7 +25,7 @@ export class TrainersComponent implements OnInit {
     address: new FormControl(),
   });
 
-  trainers: apiTrainerModel[] = [];
+  trainers = signal<apiTrainerModel[]>([]);
 
   constructor(
     private utils: UtilitiesService,
@@ -39,7 +39,7 @@ export class TrainersComponent implements OnInit {
 
   getAll() {
     this.trainerService.getAllTrainers().subscribe((res: any) => {
-      this.trainers = res;
+      this.trainers.set(res);
     });
   }
 
@@ -50,7 +50,6 @@ export class TrainersComponent implements OnInit {
     mobile: string,
     address: string
   ) {
-    console.log('this is my id' + id, 'this is my assessor' + name);
     this.trainerService
       .updateTrainer(id, name, initials, mobile, address)
       .subscribe((res: any) => {
@@ -72,7 +71,7 @@ export class TrainersComponent implements OnInit {
       });
   }
   onEdit(trainer: any) {
-    this.trainers.forEach((element: apiTrainerModel) => {
+    this.trainers().forEach((element: apiTrainerModel) => {
       element.isEdit = false;
     });
     trainer.isEdit = true;

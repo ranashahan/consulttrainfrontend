@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import * as XLSX from 'xlsx';
 import { apiGenericModel } from '../model/Generic';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -15,17 +15,58 @@ export class UtilitiesService {
    * @param tableId Table id
    * @param name table name
    */
-  exportToExcel(tableId: string, name?: string) {
+  public exportToExcel(tableId: string, name?: string) {
     let timeSpan = new Date().toISOString();
     let prefix = name || 'ExportResult';
     let fileName = `${prefix}-${timeSpan}`;
     let targetTableElm = document.getElementById(tableId);
-    if (targetTableElm != null) {
-      let wb = XLSX.utils.table_to_book(targetTableElm, <XLSX.Table2SheetOpts>{
+
+    if (targetTableElm) {
+      // Clone the table to avoid modifying the original table in the DOM
+      let clonedTable = targetTableElm.cloneNode(true) as HTMLElement;
+
+      // Remove the "action" column (assuming it's the last column)
+      this.removeColumn(clonedTable, 'Action'); // Call a helper function to remove the action column
+
+      let wb = XLSX.utils.table_to_book(clonedTable, <XLSX.Table2SheetOpts>{
         sheet: prefix,
       });
       XLSX.writeFile(wb, `${fileName}.xlsx`);
     }
+  }
+
+  /**
+   * Private method only for export utility
+   * @param table
+   * @param headerName
+   * @returns clone workbook
+   */
+  private removeColumn(table: HTMLElement, headerName: string): void {
+    const headerCells = table.querySelectorAll('th');
+    let columnIndex = -1;
+
+    // Find the index of the column with the specified header name
+    headerCells.forEach((th, index) => {
+      if (th.textContent?.trim() === headerName) {
+        columnIndex = index;
+      }
+    });
+
+    if (columnIndex === -1) return; // If the column doesn't exist, exit
+
+    // Remove the header cell
+    headerCells[columnIndex]?.parentElement?.removeChild(
+      headerCells[columnIndex]
+    );
+
+    // Remove the corresponding cells in each row
+    const rows = table.querySelectorAll('tr');
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll('td');
+      if (cells[columnIndex]) {
+        cells[columnIndex].parentElement?.removeChild(cells[columnIndex]);
+      }
+    });
   }
 
   /**
@@ -55,13 +96,6 @@ export class UtilitiesService {
     // Convert MM/DD/YYYY format to YYYY-MM-DD
     const [month, day, year] = date.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-  }
-
-  bloodGroups(): string[] {
-    return ['A-ve', 'A+ve', 'B-ve', 'B+ve', 'O+ve', 'O-ve', 'AB-ve', 'AB+ve'];
-  }
-  visuals(): string[] {
-    return ['Normal', 'Abnormal', 'Glasses Prescribed'];
   }
 
   roles(): string[] {

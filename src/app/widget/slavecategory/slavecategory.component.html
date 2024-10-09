@@ -1,12 +1,12 @@
 <button
-  class="btn btn-sm btn-outline-secondary float-end"
+  class="btn btn-sm btn-outline-secondary float-end mt-2"
   (click)="executeExport()"
   title="Export to Excel"
 >
   <i class="fa-solid fa-file-excel me-1"></i>Export
 </button>
 <button
-  class="btn btn-sm btn-outline-secondary float-end me-1"
+  class="btn btn-sm btn-outline-secondary float-end me-1 mt-2"
   title="Add new"
   data-bs-toggle="modal"
   data-bs-target="#SecondarySaveModal"
@@ -15,10 +15,10 @@
   <i class="fa-solid fa-plus me-1"></i>Add
 </button>
 <table
-  class="table table-hover table-bordered table-responsive-md"
+  class="table table-hover table-bordered table-responsive-md fs-7"
   id="secondarycategory-table"
 >
-  <thead class="table-light">
+  <thead class="table-info">
     <tr>
       <th>#</th>
       <th>Name</th>
@@ -33,7 +33,11 @@
       <td class="col col-lg-1">{{ i + 1 }}</td>
       <td>
         <div *ngIf="item.isEdit">
-          <input type="text" [(ngModel)]="item.name" class="form-control" />
+          <input
+            type="text"
+            [(ngModel)]="item.name"
+            class="form-control form-control-sm"
+          />
         </div>
         <div *ngIf="!item.isEdit">
           {{ item.name }}
@@ -44,7 +48,7 @@
           <input
             type="text"
             [(ngModel)]="item.description"
-            class="form-control"
+            class="form-control form-control-sm"
           />
         </div>
         <div *ngIf="!item.isEdit">
@@ -53,7 +57,11 @@
       </td>
       <td>
         <div *ngIf="item.isEdit">
-          <input type="text" [(ngModel)]="item.initials" class="form-control" />
+          <input
+            type="text"
+            [(ngModel)]="item.initials"
+            class="form-control form-control-sm"
+          />
         </div>
         <div *ngIf="!item.isEdit">
           {{ item.initials }}
@@ -73,7 +81,10 @@
       </td> -->
       <td>
         <div *ngIf="item.isEdit">
-          <select class="form-select" [(ngModel)]="item.mastercategoryid">
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="item.mastercategoryid"
+          >
             <option
               *ngFor="let category of primaryCategories"
               [value]="category.id"
@@ -134,10 +145,10 @@
 >
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">
+      <div class="modal-header bg-info-subtle">
+        <h6 class="modal-title" id="exampleModalLabel">
           Add New Secondary Category
-        </h5>
+        </h6>
         <button
           type="button"
           class="btn-close"
@@ -145,53 +156,55 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body bg-light">
         <form [formGroup]="formSecondaryCategory">
           <div class="row">
-            <div class="col-12">
-              <label for="name" class="form-label">Name</label>
+            <div class="col-12 required">
+              <label for="slavename" class="form-label">Name</label>
               <input
                 type="text"
-                name="name"
-                class="form-control"
-                id="name"
+                name="slavename"
+                class="form-control form-control-sm"
+                id="slavename"
                 placeholder="Commentary Driving"
                 formControlName="name"
                 required
               />
             </div>
             <div class="col-12">
-              <label for="description" class="form-label mt-1"
+              <label for="slavedescription" class="form-label mt-1"
                 >Description</label
               >
               <input
                 type="text"
-                name="description"
-                class="form-control"
-                id="description"
+                name="slavedescription"
+                class="form-control form-control-sm"
+                id="slavedescription"
                 placeholder="Commentary Driving Description"
                 formControlName="description"
               />
             </div>
             <div class="col-12">
-              <label for="initials" class="form-label mt-1">Initials</label>
+              <label for="slaveinitials" class="form-label mt-1"
+                >Initials</label
+              >
               <input
                 type="text"
-                name="initials"
-                class="form-control"
-                id="initials"
+                name="slaveinitials"
+                class="form-control form-control-sm"
+                id="slaveinitials"
                 placeholder="A"
                 formControlName="initials"
               />
             </div>
-            <div class="col-12">
-              <label for="primarycategory" class="form-label mt-1"
+            <div class="col-12 required">
+              <label for="slaveprimarycategory" class="form-label mt-1"
                 >Primary Category</label
               >
               <select
-                name="primarycategory"
-                class="form-select"
-                id="primarycategory"
+                name="slaveprimarycategory"
+                class="form-select form-select-sm"
+                id="slaveprimarycategory"
                 formControlName="mastercategoryid"
                 required
               >
@@ -204,7 +217,7 @@
           </div>
         </form>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer bg-info-subtle">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>

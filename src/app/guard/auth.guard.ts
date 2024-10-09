@@ -29,7 +29,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   if (!userHasRole) {
     // If user doesn't have the required roles, redirect to a login or error page
-    router.navigate(['/unauthorized']); // Redirect to an unauthorized or login page
+    router.navigateByUrl('/unauthorized'); // Redirect to an unauthorized or login page
     return false;
   }
 

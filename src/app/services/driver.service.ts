@@ -7,7 +7,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { catchError, Observer, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { apiDriverModel } from '../model/Driver';
 
 @Injectable({
@@ -26,6 +26,12 @@ export class DriverService {
     return this.http.get<apiDriverModel>(this.apiURL + 'getAll');
   }
 
+  getDriverByNIC(nic: string) {
+    return this.http.get<apiDriverModel>(this.apiURL + 'nic', {
+      params: { nic },
+    });
+  }
+
   getDriverByID(id: number) {
     return this.http.get<apiDriverModel>(this.apiURL + id);
   }
@@ -37,6 +43,7 @@ export class DriverService {
   GetSearch(query: string) {
     return this.http.get<apiDriverModel>(`${this.apiURL}/search?nic=${query}`);
   }
+
   searchDrivers(
     nic?: any,
     licenseNumber?: any,
@@ -70,6 +77,7 @@ export class DriverService {
     // Make GET request with query parameters
     return this.http.get<any>(`${this.apiURL}/search`, { params });
   }
+
   GetAllDriverSearch(query: string) {
     return this.http.get<apiDriverModel>(`${this.apiURL}/search?${query}`);
   }
@@ -78,16 +86,9 @@ export class DriverService {
    * Update driver by id
    * @param id id
    * @param name name
-   * @param contact contact
-   * @param address address
-   * @returns response
-   */
-  /**
-   *
-   * @param id id
-   * @param name name
    * @param dob date of birth
    * @param nic nic
+   * @param nicexpiry nic expiry
    * @param licensenumber license number
    * @param licensetypeid license type
    * @param licenseexpiry expiry
@@ -98,15 +99,18 @@ export class DriverService {
    * @param permitexpiry permit expiry date
    * @param bloodgroupid blood group id
    * @param contractorid contractor id
+   * @param visualid visual id
    * @param ddccount ddc count number
    * @param experience existing driver experience
-   * @returns
+   * @param comment comment
+   * @returns Observable
    */
   updatedriver(
     id: number,
     name: string,
     dob: string,
     nic: string,
+    nicexpiry: Date,
     licensenumber: string,
     licensetypeid: number,
     licenseexpiry: Date,
@@ -117,14 +121,16 @@ export class DriverService {
     permitexpiry: Date,
     bloodgroupid: number,
     contractorid: number,
+    visualid: number,
     ddccount: number,
-    experience: number
+    experience: number,
+    comment: string
   ): Observable<apiDriverModel> {
-    console.log('this is my id: ' + name);
     return this.http.put<apiDriverModel>(this.apiURL + id, {
       name,
       dob,
       nic,
+      nicexpiry,
       licensenumber,
       licensetypeid,
       licenseexpiry,
@@ -135,8 +141,10 @@ export class DriverService {
       permitexpiry,
       bloodgroupid,
       contractorid,
+      visualid,
       ddccount,
       experience,
+      comment,
       userid: this.authService.getUserID(),
     });
   }
@@ -146,6 +154,7 @@ export class DriverService {
    * @param name name
    * @param dob date of birth
    * @param nic nic
+   * @param nicexpiry nic expiry
    * @param licensenumber license number
    * @param licensetypeid license type
    * @param licenseexpiry expiry
@@ -155,15 +164,18 @@ export class DriverService {
    * @param permitissue permit issue date
    * @param permitexpiry permit expiry date
    * @param bloodgroupid blood group id
-   * @param contractorid contractor id
+   * @param contractorid contractor
+   * @param visualid visual
    * @param ddccount ddc count number
    * @param experience existing driver experience
-   * @returns response
+   * @param comment comment
+   * @returns Observable
    */
   createDriver(
     name: string,
     dob: string,
     nic: string,
+    nicexpiry: Date,
     licensenumber: string,
     licensetypeid: number,
     licenseexpiry: Date,
@@ -173,8 +185,10 @@ export class DriverService {
     permitissue: Date,
     bloodgroupid: number,
     contractorid: number,
+    visualid: number,
     ddccount: number,
-    experience: number
+    experience: number,
+    comment: string
   ): Observable<apiDriverModel> {
     return this.http
       .post<apiDriverModel>(
@@ -183,6 +197,7 @@ export class DriverService {
           name,
           dob,
           nic,
+          nicexpiry,
           licensenumber,
           licensetypeid,
           licenseexpiry,
@@ -192,8 +207,10 @@ export class DriverService {
           permitissue,
           bloodgroupid,
           contractorid,
+          visualid,
           ddccount,
           experience,
+          comment,
           userid: this.authService.getUserID(),
         },
         { observe: 'response' }

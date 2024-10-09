@@ -35,7 +35,7 @@
     class="table table-hover table-bordered table-responsive-md"
     id="blood-table"
   >
-    <thead class="table-light">
+    <thead class="table-info">
       <tr>
         <th>#</th>
         <th>ID</th>
@@ -46,7 +46,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of bloodgroups; let i = index">
+      <tr *ngFor="let item of bloodgroups(); let i = index">
         <td class="col col-lg-1">{{ i + 1 }}</td>
         <td>
           <div>
@@ -113,10 +113,8 @@
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">
-            Add New BloodGroup
-          </h1>
+        <div class="modal-header bg-info-subtle">
+          <h6 class="modal-title" id="exampleModalLabel">Add New BloodGroup</h6>
           <button
             type="button"
             class="btn-close"
@@ -124,7 +122,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body bg-light">
           <form [formGroup]="formSaveBg">
             <div class="row">
               <div class="col-12">
@@ -142,7 +140,7 @@
             </div>
           </form>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer bg-info-subtle">
           <button
             type="button"
             class="btn btn-secondary"

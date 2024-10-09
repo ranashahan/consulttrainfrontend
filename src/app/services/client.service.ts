@@ -9,8 +9,8 @@ import { apiClientModel } from '../model/Client';
   providedIn: 'root',
 })
 export class ClientService {
-  private apiURL = `${environment.apiUrl}client/`;
-  private apiURLCC = `${environment.apiUrl}cc/`;
+  private readonly apiURL = `${environment.apiUrl}client/`;
+  private readonly apiURLCC = `${environment.apiUrl}cc/`;
 
   constructor(private http: HttpClient) {}
   authService = inject(AuthService);

@@ -39,22 +39,57 @@
 
     <!-- Charts Section -->
     <div class="row">
-      <div class="col-lg-6 mb-4">
-        <div class="card">
+      <div class="col-md-4 mb-4">
+        <div class="customcard bg-warning bg-opacity-25">
           <div class="card-body">
-            <h5 class="card-title">User Growth</h5>
-            <div>
-              <canvasjs-chart [options]="chartOptions"></canvasjs-chart>
+            <h5 class="card-title">Trainer Workout</h5>
+            <div id="trainerCOpt">
+              <apx-chart
+                [series]="trainerCOpt.series1"
+                [chart]="trainerCOpt.chart"
+                [labels]="trainerCOpt.labels"
+                [responsive]="trainerCOpt.responsive"
+              ></apx-chart>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mb-4">
-        <div class="card">
+
+      <div class="col-lg-4 mb-4">
+        <div class="customcard bg-primary bg-opacity-25">
+          <div class="card-body">
+            <h5 class="card-title">Location Statistics</h5>
+            <div>
+              <div id="locationCOpt"></div>
+              <apx-chart
+                [series]="locationCOpt.series"
+                [chart]="locationCOpt.chart"
+                [dataLabels]="locationCOpt.dataLabels"
+                [plotOptions]="locationCOpt.plotOptions"
+                [title]="locationCOpt.title"
+                [colors]="locationCOpt.colors"
+              ></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 mb-4">
+        <div class="customcard bg-success bg-opacity-25">
           <div class="card-body">
             <h5 class="card-title">Revenue Trend</h5>
             <div>
-              <canvasjs-chart [options]="chartOption1"></canvasjs-chart>
+              <apx-chart
+                [series]="trendCOpt.series"
+                [chart]="trendCOpt.chart"
+                [xaxis]="trendCOpt.xaxis"
+                [yaxis]="trendCOpt.yaxis"
+                [dataLabels]="trendCOpt.dataLabels"
+                [fill]="trendCOpt.fill"
+                [colors]="trendCOpt.colors"
+                [stroke]="trendCOpt.stroke"
+                [title]="trendCOpt.title"
+              ></apx-chart>
             </div>
           </div>
         </div>

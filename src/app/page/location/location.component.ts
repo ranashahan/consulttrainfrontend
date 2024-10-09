@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { apiGenericModel } from '../../model/Generic';
 import { CommonModule } from '@angular/common';
 import {
@@ -18,7 +18,7 @@ import { UtilitiesService } from '../../services/utilities.service';
   styleUrl: './location.component.css',
 })
 export class LocationComponent implements OnInit {
-  locations: apiGenericModel[] = [];
+  locations = signal<apiGenericModel[]>([]);
   formSaveLocation = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class LocationComponent implements OnInit {
 
   getAll() {
     this.locationService.getAllLocations().subscribe((res: any) => {
-      this.locations = res;
+      this.locations.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class LocationComponent implements OnInit {
   }
 
   onEdit(location: any) {
-    this.locations.forEach((element: apiGenericModel) => {
+    this.locations().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     location.isEdit = true;

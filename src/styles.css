@@ -11,15 +11,19 @@
 .bg-gradient1 {
   background: linear-gradient(to right, #4889de 0%, #0923cb 100%);
 }
-.form-group.required .control-label:after {
+/* .form-group.required .control-label:after {
   content: "*";
   color: red;
-}
+} */
 .form-group.required .label::before {
   content: "*";
   color: red;
 }
-.required .label::after {
+.form-label.required ::before {
+  content: "*";
+  color: red;
+}
+.required .form-label::before {
   content: "*";
   color: red;
 }

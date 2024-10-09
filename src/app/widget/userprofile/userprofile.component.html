@@ -2,8 +2,8 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <!-- Modal Header -->
-      <div class="modal-header bgGradient">
-        <h4 class="modal-title text-white">User Profile</h4>
+      <div class="modal-header bg-info-subtle">
+        <h6 class="modal-title">User Profile</h6>
         <button
           type="button"
           class="btn-close"
@@ -19,7 +19,7 @@
       ></app-alert>
       }
       <!-- Modal body -->
-      <div class="modal-body">
+      <div class="modal-body bg-light">
         <form [formGroup]="formUser">
           <div class="row">
             <div class="col-3">
@@ -141,7 +141,7 @@
       </div>
 
       <!-- Modal footer -->
-      <div class="modal-footer">
+      <div class="modal-footer bg-info-subtle">
         <button type="submit" class="btn btn-primary" (click)="saveForm()">
           Save
         </button>

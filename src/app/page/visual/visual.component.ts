@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './visual.component.css',
 })
 export class VisualComponent implements OnInit {
-  visuals: apiGenericModel[] = [];
+  visuals = signal<apiGenericModel[]>([]);
   formSaveVisual = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class VisualComponent implements OnInit {
 
   getAll() {
     this.visualService.getAllVisuals().subscribe((res: any) => {
-      this.visuals = res;
+      this.visuals.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class VisualComponent implements OnInit {
   }
 
   onEdit(visual: any) {
-    this.visuals.forEach((element: apiGenericModel) => {
+    this.visuals().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     visual.isEdit = true;

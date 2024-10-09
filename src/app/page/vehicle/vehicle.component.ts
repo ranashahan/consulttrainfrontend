@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +18,7 @@ import { UtilitiesService } from '../../services/utilities.service';
   styleUrl: './vehicle.component.css',
 })
 export class VehicleComponent implements OnInit {
-  vehicles: apiGenericModel[] = [];
+  vehicles = signal<apiGenericModel[]>([]);
   formSaveVehicle = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class VehicleComponent implements OnInit {
 
   getAll() {
     this.vehicleService.getAllVehicles().subscribe((res: any) => {
-      this.vehicles = res;
+      this.vehicles.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class VehicleComponent implements OnInit {
   }
 
   onEdit(vehicle: any) {
-    this.vehicles.forEach((element: apiGenericModel) => {
+    this.vehicles().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     vehicle.isEdit = true;

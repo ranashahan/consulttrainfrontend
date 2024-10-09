@@ -15,7 +15,7 @@
     </div>
   </div>
   <hr />
-  <div class="bg-warning">
+  <div class="bg-success bg-opacity-50">
     <form
       [formGroup]="formSaveDrivers"
       class="row row-cols-lg-auto g-3 align-items-end ms-1"
@@ -109,7 +109,7 @@
       <div class="col-auto">
         <button
           type="submit"
-          class="btn btn-primary btn-sm"
+          class="btn btn-success btn-sm"
           (click)="getFillterredData()"
         >
           <i class="fa-brands fa-searchengin me-1"></i>Search
@@ -154,18 +154,10 @@
     class="table table-hover table-bordered table-responsive-md fs-7"
     id="alldrivers-table"
   >
-    <thead class="table-warning">
+    <thead class="table-success">
       <tr>
         <th>#</th>
-        <th (click)="sortData('id')">
-          ID<i
-            class="fa-solid"
-            [ngClass]="{
-              'fa-arrow-up': sortKey === 'id' && sortDirection === 'asc',
-              'fa-arrow-down': sortKey === 'id' && sortDirection === 'desc'
-            }"
-          ></i>
-        </th>
+        <th>ID</th>
         <th>Driver Name</th>
         <th>Contractor</th>
         <th>NIC</th>
@@ -179,10 +171,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of paginatedDrivers; let i = index">
+      @for (item of paginatedDrivers; track $index) {
+      <tr>
         <td>
           <div>
-            {{ i + 1 }}
+            {{ $index + 1 }}
           </div>
         </td>
         <td>
@@ -241,7 +234,7 @@
         <td>
           <button
             type="button"
-            class="btn btn-outline-primary position-relative"
+            class="btn btn-outline-success position-relative"
             (click)="viewDriverDetails(item.id)"
           >
             <i class="fa-solid fa-circle-info"></i>
@@ -262,6 +255,11 @@
           </button>
         </td>
       </tr>
+      }@empty {
+      <tr>
+        <p>Please update your search criteria for items to be displayed</p>
+      </tr>
+      }
     </tbody>
   </table>
   <nav>

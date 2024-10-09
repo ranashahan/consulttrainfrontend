@@ -4,6 +4,7 @@ export interface apiDriverModel {
   dob: string;
   age: number;
   nic: string;
+  nicexpiry: Date;
   licensenumber: string;
   licensetypeid: number;
   licenseexpiry: Date;
@@ -14,8 +15,11 @@ export interface apiDriverModel {
   permitexpiry: Date;
   bloodgroupid: number;
   contractorid: number;
+  visualid: number;
   ddccount: number;
   experience: number;
+  comment: string;
   createdby: string;
   isEdit: boolean;
+  message: string;
 }

@@ -16,6 +16,7 @@ import { DltypeService } from '../../services/dltype.service';
 import { apiContractorModel } from '../../model/Contractor';
 import { UtilitiesService } from '../../services/utilities.service';
 import { AlertComponent } from '../../widget/alert/alert.component';
+import { VisualService } from '../../services/visual.service';
 
 @Component({
   selector: 'app-driverdetail',
@@ -37,6 +38,7 @@ export class DriverdetailComponent implements OnInit {
   driverForm!: FormGroup;
   bloodgroups: apiGenericModel[] = [];
   dltypes: apiGenericModel[] = [];
+  visuals: apiGenericModel[] = [];
   contractors: apiContractorModel[] = [];
 
   isAlert: boolean = false;
@@ -50,20 +52,22 @@ export class DriverdetailComponent implements OnInit {
     private bgService: BloodgroupService,
     private cService: ContractorService,
     private dltypeService: DltypeService,
-    private utils: UtilitiesService
+    private Utils: UtilitiesService,
+    private vService: VisualService
   ) {}
 
   ngOnInit(): void {
-    this.utils.setTitle('Driver details');
+    this.Utils.setTitle('Driver details');
     // Get the ID from the route
     this.driverId = parseInt(this.route.snapshot.paramMap.get('id') ?? '0');
 
     this.driverForm = this.fb.group({
       id: [{ value: '', disabled: true }], // Always disabled
       name: [{ value: '', disabled: !this.isEdit }],
-      dob: [{ value: '', disabled: !this.isEdit }],
+      dob: [{ value: null, disabled: !this.isEdit }],
       age: [{ value: '', disabled: !this.isEdit }],
       nic: [{ value: '', disabled: true }],
+      nicexpiry: [{ value: null, disabled: !this.isEdit }],
       licensenumber: [{ value: '', disabled: !this.isEdit }],
       licensetypeid: [{ value: '', disabled: !this.isEdit }],
       licenseexpiry: [{ value: '', disabled: !this.isEdit }],
@@ -74,8 +78,10 @@ export class DriverdetailComponent implements OnInit {
       permitexpiry: [{ value: '', disabled: !this.isEdit }],
       bloodgroupid: [{ value: '', disabled: !this.isEdit }],
       contractorid: [{ value: '', disabled: !this.isEdit }],
+      visualid: [{ value: '', disabled: !this.isEdit }],
       ddccount: [{ value: 0, disabled: !this.isEdit }],
       experience: [{ value: 0, disabled: !this.isEdit }],
+      comment: [{ value: '', disabled: !this.isEdit }],
       createdby: [{ value: '', disabled: true }],
     });
     // Fetch the driver details using the ID
@@ -85,6 +91,7 @@ export class DriverdetailComponent implements OnInit {
     this.getBloodGroups();
     this.getDLTypes();
     this.getContractors();
+    this.getVisuals();
   }
 
   getBloodGroups() {
@@ -99,19 +106,28 @@ export class DriverdetailComponent implements OnInit {
     });
   }
 
+  getVisuals() {
+    this.vService.getAllVisuals().subscribe((res: any) => {
+      this.visuals = res;
+    });
+  }
+
   getContractors() {
     this.cService.getAllContractors().subscribe((res: any) => {
       this.contractors = res;
     });
   }
-  getBloodGroupName(bloodgroupId: number): string {
-    return this.utils.getGenericName(this.bloodgroups, bloodgroupId);
+  getBloodGroupName(itemId: number): string {
+    return this.Utils.getGenericName(this.bloodgroups, itemId);
   }
-  getContractosName(contractorId: number): string {
-    return this.utils.getGenericName(this.contractors, contractorId);
+  getContractosName(itemId: number): string {
+    return this.Utils.getGenericName(this.contractors, itemId);
   }
-  getDLTypesName(dltypeId: number): string {
-    return this.utils.getGenericName(this.dltypes, dltypeId);
+  getDLTypesName(itemId: number): string {
+    return this.Utils.getGenericName(this.dltypes, itemId);
+  }
+  getVisualsName(itemId: number): string {
+    return this.Utils.getGenericName(this.visuals, itemId);
   }
 
   getDriver() {
@@ -122,27 +138,33 @@ export class DriverdetailComponent implements OnInit {
         this.driverForm.patchValue(driverData[0]);
       });
   }
-
+  printPage(): void {
+    window.print();
+  }
   updateDriver() {
     if (this.driverForm.valid) {
       let updatedDriver = this.driverForm.getRawValue();
-      console.log(updatedDriver);
       if (updatedDriver.dob) {
-        updatedDriver.dob = this.utils.convertToMySQLDate(updatedDriver.dob);
+        updatedDriver.dob = this.Utils.convertToMySQLDate(updatedDriver.dob);
       }
       if (updatedDriver.licenseexpiry) {
-        updatedDriver.licenseexpiry = this.utils.convertToMySQLDate(
+        updatedDriver.licenseexpiry = this.Utils.convertToMySQLDate(
           updatedDriver.licenseexpiry
         );
       }
       if (updatedDriver.permitissue) {
-        updatedDriver.permitissue = this.utils.convertToMySQLDate(
+        updatedDriver.permitissue = this.Utils.convertToMySQLDate(
           updatedDriver.permitissue
+        );
+      }
+      if (updatedDriver.nicexpiry) {
+        updatedDriver.nicexpiry = this.Utils.convertToMySQLDate(
+          updatedDriver.nicexpiry
         );
       }
 
       if (updatedDriver.permitexpiry) {
-        updatedDriver.permitexpiry = this.utils.convertToMySQLDate(
+        updatedDriver.permitexpiry = this.Utils.convertToMySQLDate(
           updatedDriver.permitexpiry
         );
       }
@@ -153,6 +175,7 @@ export class DriverdetailComponent implements OnInit {
           updatedDriver.name,
           updatedDriver.dob,
           updatedDriver.nic,
+          updatedDriver.nicexpiry,
           updatedDriver.licensenumber,
           updatedDriver.licensetypeid,
           updatedDriver.licenseexpiry,
@@ -163,8 +186,10 @@ export class DriverdetailComponent implements OnInit {
           updatedDriver.permitexpiry,
           updatedDriver.bloodgroupid,
           updatedDriver.contractorid,
+          updatedDriver.visualid,
           updatedDriver.ddccount,
-          updatedDriver.experience
+          updatedDriver.experience,
+          updatedDriver.comment
         )
         .subscribe((res: any) => {
           this.successMessage = 'Driver updated successfully';
@@ -176,12 +201,7 @@ export class DriverdetailComponent implements OnInit {
   }
 
   toggleEdit(): void {
-    // if (this.isEdit) {
-    //   console.log(this.driverForm.get('id')?.value);
-    //   this.updateDriver();
-    // }
     this.isEdit = !this.isEdit;
-
     // Enable or disable all fields except 'id'
     Object.keys(this.driverForm.controls).forEach((field) => {
       if (field !== 'id' && field !== 'age' && field !== 'createdby') {
@@ -195,7 +215,6 @@ export class DriverdetailComponent implements OnInit {
     });
   }
 
-  // Reset form to initial values (optional)
   resetForm(): void {
     this.driverForm.reset();
     this.getDriver(); // Re-load initial data to reset the form

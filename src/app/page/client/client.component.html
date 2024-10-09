@@ -30,10 +30,9 @@
     class="table table-hover table-bordered table-responsive-md small"
     id="client-table"
   >
-    <thead class="table-light">
+    <thead class="table-info">
       <tr>
         <th>#</th>
-        <th>ID</th>
         <th>Client Name</th>
         <th>Contact Person</th>
         <th>Contact #</th>
@@ -45,16 +44,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of clients; let i = index">
+      <tr *ngFor="let item of clients(); let i = index">
         <td class="col col-lg-1">{{ i + 1 }}</td>
         <td>
-          <div>
-            {{ item.id }}
-          </div>
-        </td>
-        <td>
           <div *ngIf="item.isEdit">
-            <input type="text" [(ngModel)]="item.name" class="form-control" />
+            <input
+              type="text"
+              [(ngModel)]="item.name"
+              class="form-control form-control-sm"
+            />
           </div>
           <div *ngIf="!item.isEdit">
             {{ item.name }}
@@ -65,7 +63,7 @@
             <input
               type="text"
               [(ngModel)]="item.contactperson"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="Muhammad Ahmed"
             />
           </div>
@@ -78,7 +76,7 @@
             <input
               type="text"
               [(ngModel)]="item.contactnumber"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="03XX-XXX-XXXX"
             />
           </div>
@@ -91,7 +89,7 @@
             <input
               type="text"
               [(ngModel)]="item.address"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="H#19,Block-14"
             />
           </div>
@@ -104,7 +102,7 @@
             <input
               type="text"
               [(ngModel)]="item.website"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="www.consult&train.com"
             />
           </div>
@@ -117,7 +115,7 @@
             <input
               type="text"
               [(ngModel)]="item.agentname"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="Ahmed"
             />
           </div>
@@ -130,7 +128,7 @@
             <input
               type="text"
               [(ngModel)]="item.agentnumber"
-              class="form-control"
+              class="form-control form-control-sm"
               placeholder="03XX-XXX-XXXX"
             />
           </div>
@@ -192,10 +190,8 @@
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">
-            Add New Client
-          </h1>
+        <div class="modal-header bg-info-subtle">
+          <h6 class="modal-title" id="exampleModalLabel">Add New Client</h6>
           <button
             type="button"
             class="btn-close"
@@ -203,10 +199,10 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body bg-light">
           <form [formGroup]="formSaveClient">
             <div class="row">
-              <div class="col-12">
+              <div class="col-12 required">
                 <label for="name" class="form-label">Client Name</label>
                 <input
                   type="text"
@@ -289,7 +285,7 @@
             </div>
           </form>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer bg-info-subtle">
           <button
             type="button"
             class="btn btn-secondary"

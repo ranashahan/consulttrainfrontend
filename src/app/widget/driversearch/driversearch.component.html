@@ -8,8 +8,8 @@
 >
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="driverSearchModalLabel">Search Driver</h5>
+      <div class="modal-header bg-info-subtle">
+        <h6 class="modal-title" id="driverSearchModalLabel">Search Driver</h6>
         <button
           type="button"
           class="btn-close"
@@ -36,12 +36,14 @@
             type="button"
             class="btn btn-primary"
             (click)="searchDrivers()"
+            [disabled]="searchForm.invalid"
           >
             Search
           </button>
         </form>
 
         <!-- Driver Results -->
+        @if (drivers && drivers.length>0) {
         <table class="table mt-3" *ngIf="drivers.length">
           <thead>
             <tr>
@@ -59,7 +61,7 @@
               <td>
                 <button
                   class="btn btn-success"
-                  (click)="selectDriver(driver.id)"
+                  (click)="selectDriver(driver)"
                   data-bs-dismiss="modal"
                 >
                   Select
@@ -68,6 +70,11 @@
             </tr>
           </tbody>
         </table>
+        }@else {
+        <div>
+          <span>No record found</span>
+        </div>
+        }
       </div>
     </div>
   </div>
