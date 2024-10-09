@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { apiGenericModel } from '../../model/Generic';
 import {
   FormControl,
@@ -18,7 +18,7 @@ import { UtilitiesService } from '../../services/utilities.service';
   styleUrl: './stage.component.css',
 })
 export class StageComponent implements OnInit {
-  stages: apiGenericModel[] = [];
+  stages = signal<apiGenericModel[]>([]);
   formSaveStage = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class StageComponent implements OnInit {
 
   getAll() {
     this.stageService.getAllStages().subscribe((res: any) => {
-      this.stages = res;
+      this.stages.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class StageComponent implements OnInit {
   }
 
   onEdit(stage: any) {
-    this.stages.forEach((element: apiGenericModel) => {
+    this.stages().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     stage.isEdit = true;

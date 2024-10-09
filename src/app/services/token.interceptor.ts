@@ -20,10 +20,17 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error) => {
       console.log('Token Interceptor Error:', error);
       // If 401 Unauthorized, try to refresh the token
-      if (error.status === 401 && !req.url.includes('/refreshtoken')) {
+      if (
+        error.status === 401 &&
+        !req.url.includes('/login') &&
+        !req.url.includes('/refreshtoken')
+      ) {
         return authService.refreshToken().pipe(
           switchMap((tokens) => {
-            // Clone and reprocess the request with the new token
+            // Store new tokens
+            authService.storeTokens(tokens.accessToken, tokens.refreshToken);
+
+            // Retry the original request with the new access token
             return next(
               req.clone({
                 setHeaders: {
@@ -34,14 +41,13 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
           }),
           catchError((refreshError) => {
             console.error('Token refresh failed:', refreshError);
-            // Handle refresh token errors (logout or redirect to login)
-            authService.logout(); // Implement logout logic in your AuthService
-            window.location.href = '/login';
-            const errorMessage =
-              refreshError.error?.message ||
-              refreshError.message ||
-              'Unknown error during token refresh';
-            return throwError(() => new Error(errorMessage));
+            if (refreshError.status === 401 || refreshError.status === 403) {
+              authService.logout(); // Ensure logout logic removes tokens
+              window.location.href = '/login'; // Redirect to login page
+            }
+            return throwError(
+              () => new Error('Token refresh failed, please log in again.')
+            );
           })
         );
       }

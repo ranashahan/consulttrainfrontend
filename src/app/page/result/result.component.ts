@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { apiGenericModel } from '../../model/Generic';
 import { ResultService } from '../../services/result.service';
 import { UtilitiesService } from '../../services/utilities.service';
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './result.component.css',
 })
 export class ResultComponent implements OnInit {
-  results: apiGenericModel[] = [];
+  results = signal<apiGenericModel[]>([]);
   formSaveResult = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class ResultComponent implements OnInit {
 
   getAll() {
     this.resultService.getAllResults().subscribe((res: any) => {
-      this.results = res;
+      this.results.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class ResultComponent implements OnInit {
   }
 
   onEdit(result: any) {
-    this.results.forEach((element: apiGenericModel) => {
+    this.results().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     result.isEdit = true;

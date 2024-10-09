@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +18,7 @@ import { UtilitiesService } from '../../services/utilities.service';
   styleUrl: './title.component.css',
 })
 export class TitleComponent implements OnInit {
-  titles: apiGenericModel[] = [];
+  titles = signal<apiGenericModel[]>([]);
   formSaveTitle = new FormGroup({
     name: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class TitleComponent implements OnInit {
 
   getAll() {
     this.titleService.getAllTitles().subscribe((res: any) => {
-      this.titles = res;
+      this.titles.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class TitleComponent implements OnInit {
   }
 
   onEdit(title: any) {
-    this.titles.forEach((element: apiGenericModel) => {
+    this.titles().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     title.isEdit = true;

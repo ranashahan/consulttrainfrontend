@@ -11,7 +11,6 @@ import { DriversreportComponent } from './page/driversreport/driversreport.compo
 import { AddassessmentComponent } from './page/addassessment/addassessment.component';
 import { AssessmentsreportComponent } from './page/assessmentsreport/assessmentsreport.component';
 import { TrainersComponent } from './page/trainers/trainers.component';
-import { TraineeComponent } from './page/trainee/trainee.component';
 import { BloodGroupComponent } from './page/blood-group/blood-group.component';
 import { ContractorComponent } from './page/contractor/contractor.component';
 import { DltypeComponent } from './page/dltype/dltype.component';
@@ -21,14 +20,11 @@ import { StageComponent } from './page/stage/stage.component';
 import { TitleComponent } from './page/title/title.component';
 import { VehicleComponent } from './page/vehicle/vehicle.component';
 import { VisualComponent } from './page/visual/visual.component';
-import { FormComponent } from './page/form/form.component';
 import { UnauthorizedComponent } from './page/unauthorized/unauthorized.component';
 import { ClientComponent } from './page/client/client.component';
 import { GuestdashboardComponent } from './page/guestdashboard/guestdashboard.component';
 import { ConfigureassessmentComponent } from './page/configureassessment/configureassessment.component';
-import { MastercategoryComponent } from './widget/mastercategory/mastercategory.component';
-import { SlavecategoryComponent } from './widget/slavecategory/slavecategory.component';
-import { ActivitiesComponent } from './widget/activities/activities.component';
+import { PagenotfoundComponent } from './page/pagenotfound/pagenotfound.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -165,9 +161,9 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', component: UnauthorizedComponent },
   {
     path: 'unauthorized',
     component: UnauthorizedComponent,
   },
+  { path: '**', component: PagenotfoundComponent },
 ];

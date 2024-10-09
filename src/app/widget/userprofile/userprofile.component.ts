@@ -40,7 +40,7 @@ export class UserprofileComponent {
       company: [''],
       designation: [''],
       imagepath: [''],
-      role: [''],
+      role: [{ value: '', disabled: true }, Validators.required],
     });
     this.getLoggedinUser();
     this.getRoles();
@@ -53,8 +53,8 @@ export class UserprofileComponent {
         this.formUser.patchValue(res[0]);
         // this.username = res[0].username;
         this.userid = res[0].userid;
-        if (res[0].role == ROLES.GUEST) {
-          this.formUser.get('role')?.disable();
+        if (res[0].role == ROLES.ADMIN || res[0].role == ROLES.MANAGER) {
+          this.formUser.get('role')?.enable();
         }
       });
   }

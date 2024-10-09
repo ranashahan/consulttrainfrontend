@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { UtilitiesService } from '../../services/utilities.service';
 import { ContractorService } from '../../services/contractor.service';
 import {
@@ -31,8 +31,8 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class ContractorComponent implements OnInit {
   @Input() contractor: any;
-  contractors: apiContractorModel[] = [];
-  clients: apiClientModel[] = [];
+  contractors = signal<apiContractorModel[]>([]);
+  clients = signal<apiClientModel[]>([]);
   paginatedContractors: any[] = [];
   currentPage: number = 1;
   itemsPerPage: number = 25;
@@ -78,15 +78,14 @@ export class ContractorComponent implements OnInit {
 
   getAll() {
     this.contractorService.getAllContractors().subscribe((res: any) => {
-      this.contractors = res;
+      this.contractors.set(res);
       this.filterContractors();
     });
   }
 
   getClients() {
     this.clientService.getAll().subscribe((res: any) => {
-      console.log(res);
-      this.clients = res;
+      this.clients.set(res);
     });
   }
   updateContractor(
@@ -101,7 +100,6 @@ export class ContractorComponent implements OnInit {
     initials: string,
     clientids: string[]
   ) {
-    debugger;
     if (clientids.length < 1) {
       if (this.isAlert) {
         this.isAlert = false;
@@ -167,7 +165,7 @@ export class ContractorComponent implements OnInit {
 
   onEdit(contractor: any) {
     this.Selected(contractor.clientids.split(',').map(Number));
-    this.contractors.forEach((element: apiContractorModel) => {
+    this.contractors().forEach((element: apiContractorModel) => {
       element.isEdit = false;
     });
     contractor.isEdit = true;
@@ -179,11 +177,11 @@ export class ContractorComponent implements OnInit {
 
   filterContractors(): void {
     if (this.searchTerm) {
-      this.filteredContractors = this.contractors.filter((contractor) =>
+      this.filteredContractors = this.contractors().filter((contractor) =>
         contractor.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     } else {
-      this.filteredContractors = this.contractors;
+      this.filteredContractors = this.contractors();
     }
     this.currentPage = 1; // Reset to the first page
     this.totalPages = Math.ceil(

@@ -80,7 +80,6 @@ export class AlldriversComponent implements OnInit {
         this.drivers = res;
         this.filterDrivers();
       });
-    console.log(this.formSaveDrivers.value);
   }
 
   getAll() {
@@ -152,19 +151,28 @@ export class AlldriversComponent implements OnInit {
   }
 
   filterDrivers(): void {
-    if (this.searchTerm) {
-      this.filteredDrivers = this.drivers.filter((driver) =>
-        driver.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    if (this.drivers && this.drivers.length > 0) {
+      if (this.searchTerm) {
+        this.filteredDrivers = this.drivers.filter((driver) =>
+          driver.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+      } else {
+        this.filteredDrivers = this.drivers;
+      }
+
+      this.currentPage = 1; // Reset to the first page
+      this.totalPages = Math.ceil(
+        this.filteredDrivers.length / this.itemsPerPage
       );
+      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      this.updatePaginatedDrivers();
     } else {
-      this.filteredDrivers = this.drivers;
+      // Handle case where drivers are null or empty
+      this.filteredDrivers = [];
+      this.totalPages = 0;
+      this.pages = [];
+      this.updatePaginatedDrivers();
     }
-    this.currentPage = 1; // Reset to the first page
-    this.totalPages = Math.ceil(
-      this.filteredDrivers.length / this.itemsPerPage
-    );
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-    this.updatePaginatedDrivers();
   }
 
   updatePaginatedDrivers(): void {

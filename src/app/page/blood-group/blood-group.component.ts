@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { BloodgroupService } from '../../services/bloodgroup.service';
 import {
   FormControl,
@@ -22,7 +22,7 @@ export class BloodGroupComponent implements OnInit {
     name: new FormControl(),
   });
 
-  bloodgroups: apiGenericModel[] = [];
+  bloodgroups = signal<apiGenericModel[]>([]);
   constructor(
     private bgService: BloodgroupService,
     private utils: UtilitiesService
@@ -35,7 +35,7 @@ export class BloodGroupComponent implements OnInit {
 
   getAll() {
     this.bgService.getAllBloodgroups().subscribe((res: any) => {
-      this.bloodgroups = res;
+      this.bloodgroups.set(res);
     });
   }
 
@@ -53,7 +53,7 @@ export class BloodGroupComponent implements OnInit {
   }
 
   onEdit(blood: any) {
-    this.bloodgroups.forEach((element: apiGenericModel) => {
+    this.bloodgroups().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     blood.isEdit = true;

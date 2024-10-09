@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { DltypeService } from '../../services/dltype.service';
 import { UtilitiesService } from '../../services/utilities.service';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -18,7 +18,7 @@ import { apiGenericModel } from '../../model/Generic';
   styleUrl: './dltype.component.css',
 })
 export class DltypeComponent implements OnInit {
-  dltypes: apiGenericModel[] = [];
+  dltypes = signal<apiGenericModel[]>([]);
   formSaveDLType = new FormGroup({
     type: new FormControl(),
   });
@@ -34,7 +34,7 @@ export class DltypeComponent implements OnInit {
 
   getAll() {
     this.dltypeService.getAllDLTypes().subscribe((res: any) => {
-      this.dltypes = res;
+      this.dltypes.set(res);
     });
   }
 
@@ -52,7 +52,7 @@ export class DltypeComponent implements OnInit {
   }
 
   onEdit(dltype: any) {
-    this.dltypes.forEach((element: apiGenericModel) => {
+    this.dltypes().forEach((element: apiGenericModel) => {
       element.isEdit = false;
     });
     dltype.isEdit = true;

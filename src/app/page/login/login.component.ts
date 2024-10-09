@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   FormBuilder,
@@ -8,20 +8,21 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UtilitiesService } from '../../services/utilities.service';
-import { SignupComponent } from '../../widget/signup/signup.component';
 import { ROLES } from '../../model/Constants';
+import { AlertComponent } from '../../widget/alert/alert.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, SignupComponent],
+  imports: [ReactiveFormsModule, AlertComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnInit {
-  @ViewChild(SignupComponent) signupComponent!: SignupComponent;
   formLogin: FormGroup;
-
+  isAlert: boolean = false;
+  alertType = '';
+  successMessage = '';
   constructor(
     private router: Router,
     private utils: UtilitiesService,
@@ -47,16 +48,26 @@ export class LoginComponent implements OnInit {
         this.formLogin.value.email ?? 'empty',
         this.formLogin.value.password ?? 'empty'
       )
-      .subscribe((res: any) => {
-        if (res.role == ROLES.GUEST) {
-          this.router.navigateByUrl('gdashboard');
-        } else {
-          this.router.navigateByUrl('dashboard');
-        }
+      .subscribe({
+        next: (data) => {
+          if (data.role == ROLES.GUEST) {
+            this.router.navigateByUrl('gdashboard');
+          } else {
+            this.router.navigateByUrl('dashboard');
+          }
+        },
+        error: (err) => {
+          if (this.isAlert) {
+            this.isAlert = false;
+          }
+          this.successMessage = err.message;
+          this.alertType = 'danger';
+          this.isAlert = true;
+        },
       });
   }
 
-  openSignUpModal() {
-    this.signupComponent.openModal();
+  formReset(): void {
+    this.formLogin.reset();
   }
 }

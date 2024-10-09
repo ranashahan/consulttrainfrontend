@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './client.component.css',
 })
 export class ClientComponent implements OnInit {
-  clients: apiClientModel[] = [];
+  clients = signal<apiClientModel[]>([]);
   formSaveClient = new FormGroup({
     name: new FormControl(),
     contactperson: new FormControl(),
@@ -40,7 +40,7 @@ export class ClientComponent implements OnInit {
 
   getAll() {
     this.clientService.getAll().subscribe((res: any) => {
-      this.clients = res;
+      this.clients.set(res);
     });
   }
 
@@ -96,7 +96,7 @@ export class ClientComponent implements OnInit {
   }
 
   onEdit(result: any) {
-    this.clients.forEach((element: apiClientModel) => {
+    this.clients().forEach((element: apiClientModel) => {
       element.isEdit = false;
     });
     result.isEdit = true;

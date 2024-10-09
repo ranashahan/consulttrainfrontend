@@ -182,7 +182,7 @@
                 multiple
                 [formControl]="selectedClientIds"
               >
-                @for (item of clients; track item.id) {
+                @for (item of clients(); track item.id) {
                 <mat-option style="font-size: 12px" [value]="item.id">
                   {{ item.name }} </mat-option
                 >}
@@ -238,7 +238,7 @@
       </tr>
       }@empty {
       <tr>
-        There are no items.
+        There are no items to be displayed.
       </tr>
       }
     </tbody>
@@ -288,7 +288,7 @@
         <div class="modal-body">
           <form [formGroup]="formSaveContractor">
             <div class="row">
-              <div class="col-md-6 ms-auto">
+              <div class="col-md-6 ms-auto required">
                 <label for="contractorName" class="form-label"
                   >Contractor Full Name</label
                 >
@@ -399,7 +399,7 @@
               </div>
             </div>
             <div class="row mt-1">
-              <div class="col-12">
+              <div class="col-12 required">
                 <!-- <mat-form-field appearance="outline">
                   <mat-label style="font-size: 12px">Select Clients</mat-label>
                   <mat-select
@@ -421,7 +421,7 @@
                   multiple
                   required
                 >
-                  @for (item of clients; track item.id) {
+                  @for (item of clients(); track item.id) {
                   <option [value]="item.id">{{ item.name }}</option>
                   }
                 </select>

@@ -23,15 +23,24 @@ export class AuthService {
           localStorage?.setItem('role', tokens.role);
           this.storeTokens(tokens.accessToken, tokens.refreshToken);
         }),
-        catchError(this.handleError)
+        catchError((error) => {
+          // If 401, it means the credentials are incorrect
+          if (error.status === 401) {
+            console.log('Incorrect credentials, please try again.');
+          }
+          // Pass the error forward
+          return throwError(
+            () => new Error('Login failed, please check your credentials.')
+          );
+        })
       );
   }
 
   // Get new access token using refresh token
   refreshToken(): Observable<any> {
-    const refreshtoken = this.getRefreshToken();
+    const refreshToken = this.getRefreshToken();
     return this.http
-      .post<any>(`${this.apiUrl}/refreshtoken`, { refreshtoken })
+      .post<any>(`${this.apiUrl}/login/refreshtoken`, { refreshToken })
       .pipe(
         tap((tokens) => {
           this.storeTokens(tokens.accessToken, tokens.refreshToken);
@@ -40,7 +49,7 @@ export class AuthService {
       );
   }
   // Store tokens in localStorage or sessionStorage
-  private storeTokens(accessToken: string, refreshToken: string): void {
+  public storeTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
   }
@@ -86,7 +95,6 @@ export class AuthService {
   }
   logout(): void {
     const userid = this.getUserID();
-    console.log('My userid ' + userid);
     this.http.post(`${this.apiUrl}/logout`, { userid }).subscribe();
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -96,6 +104,19 @@ export class AuthService {
   }
   // Error handling
   private handleError(error: HttpErrorResponse): Observable<never> {
-    return throwError(() => new Error(error.message || 'Server error'));
+    let errorMessage = '';
+
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error occurred
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      // Backend returned an unsuccessful response code
+      errorMessage = `Server-side error: ${error.status} ${error.message}`;
+      console.error(`Error Details: ${error.error}`); // Logs server error details
+    }
+
+    return throwError(() => new Error(errorMessage)); // Throw error with message
+
+    //return throwError(() => new Error(error.message || 'Server error'));
   }
 }

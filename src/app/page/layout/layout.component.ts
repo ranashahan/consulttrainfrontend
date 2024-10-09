@@ -14,6 +14,7 @@ import { Menu } from '../../model/Menu';
 import { DriverService } from '../../services/driver.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { UserprofileComponent } from '../../widget/userprofile/userprofile.component';
+import { SignupComponent } from '../../widget/signup/signup.component';
 
 @Component({
   selector: 'app-layout',
@@ -27,6 +28,7 @@ import { UserprofileComponent } from '../../widget/userprofile/userprofile.compo
     CommonModule,
     FooterComponent,
     UserprofileComponent,
+    SignupComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
@@ -36,7 +38,7 @@ export class LayoutComponent implements OnInit {
   searchResults: any[] = []; // Store search results
   isLoading = false; // Show loading indicator
   @ViewChild(UserprofileComponent) userprofileComponent!: UserprofileComponent;
-
+  @ViewChild(SignupComponent) signupComponent!: SignupComponent;
   dropdownMenus: any = [];
   userRoles: string[] = [];
   constructor(
@@ -88,6 +90,9 @@ export class LayoutComponent implements OnInit {
   }
   openUserProfileModal() {
     this.userprofileComponent.openModal();
+  }
+  openSignUpModal() {
+    this.signupComponent.openModal();
   }
   canAccess(roles: string[]): boolean {
     return this.authService.hasAnyRole(roles);

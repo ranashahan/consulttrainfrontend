@@ -20,25 +20,25 @@
           </div>
           <div class="col-auto">
             <h3>
-              <i class="fa-regular fa-user me-1 text-primary"></i
+              <i class="fa-regular fa-user me-1 text-success"></i
               >{{ driver.name }}
             </h3>
             <p>
-              <i class="fa-regular fa-building me-1 text-primary"></i>
+              <i class="fa-regular fa-building me-1 text-success"></i>
               {{ getContractosName(driverForm.get("contractorid")?.value) }}
             </p>
             <p>
-              <i class="fa-regular fa-id-badge me-1 text-primary"></i
+              <i class="fa-regular fa-id-badge me-1 text-success"></i
               >{{ driverForm.get("id")?.value }}
             </p>
             <p>
-              <i class="fa-solid fa-user-tie me-1 text-primary"></i
+              <i class="fa-solid fa-user-tie me-1 text-success"></i
               >{{ driverForm.get("createdby")?.value }}
             </p>
           </div>
           <div class="mb-3 col-auto">
             <button
-              class="btn btn-outline-primary btn-sm"
+              class="btn btn-outline-success btn-sm"
               type="button"
               (click)="toggleEdit()"
               *ngIf="!isEdit"
@@ -50,7 +50,7 @@
             <button
               *ngIf="isEdit"
               id="savebtn"
-              class="btn btn-outline-primary btn-sm ms-1"
+              class="btn btn-outline-success btn-sm ms-1"
               type="submit"
               (click)="updateDriver(); toggleEdit()"
             >
@@ -58,12 +58,20 @@
               Save
             </button>
             <button
-              class="btn btn-outline-primary btn-sm ms-1"
+              class="btn btn-outline-success btn-sm ms-1"
               type="button"
               routerLink="/adddriver"
             >
               <i class="fa-solid fa-circle-plus"></i>
               Add New Driver
+            </button>
+            <button
+              class="btn btn-outline-success btn-sm ms-1"
+              type="button"
+              (click)="printPage()"
+            >
+              <i class="fa-solid fa-print"></i>
+              Print
             </button>
 
             <button
@@ -76,7 +84,7 @@
               Reset
             </button>
             <button
-              class="btn btn-outline-primary btn-sm"
+              class="btn btn-outline-success btn-sm"
               *ngIf="isEdit"
               (click)="toggleEdit()"
             >
@@ -86,254 +94,296 @@
           </div>
         </div>
         <hr />
-        <div class="mb-3 row border">
-          <label for="name" class="col-sm-1 col-form-label text-primary"
-            >Name:</label
-          >
-          <div class="col-3">
-            <input
-              id="name"
-              type="text"
-              name="name"
-              class="form-control form-control-sm"
-              formControlName="name"
-            />
-          </div>
-          <label for="dob" class="col-sm-1 col-form-label text-primary"
-            >Date of birth:</label
-          >
-          <div class="col-3">
-            <input
-              id="dob"
-              type="text"
-              class="form-control form-control-sm"
-              formControlName="dob"
-              placeholder="mm/dd/yyyy"
-            />
-          </div>
-          <label for="age" class="col-sm-1 col-form-label text-primary"
-            >Driver Age:</label
-          >
-          <div class="col-3">
-            <input
-              id="age"
-              class="form-control form-control-sm"
-              formControlName="age"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row border">
-          <label for="nic" class="col-sm-1 col-form-label text-primary"
-            >NIC Card#:</label
-          >
-          <div class="col-3">
-            <input
-              id="nic"
-              class="form-control form-control-sm"
-              type="text"
-              formControlName="nic"
-            />
-          </div>
-
-          <label for="designation" class="col-sm-1 col-form-label text-primary"
-            >Designation:</label
-          >
-          <div class="col-3">
-            <input
-              id="designation"
-              type="text"
-              name="designation"
-              class="form-control form-control-sm"
-              formControlName="designation"
-            />
-          </div>
-          <label for="department" class="col-sm-1 col-form-label text-primary"
-            >Department:</label
-          >
-          <div class="col-3">
-            <input
-              id="department"
-              type="text"
-              name="department"
-              class="form-control form-control-sm"
-              formControlName="department"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row border">
-          <label
-            for="licensenumber"
-            class="col-sm-1 col-form-label text-primary"
-            >License #:</label
-          >
-          <div class="col-3">
-            <input
-              id="licensenumber"
-              type="text"
-              name="licensenumber"
-              class="form-control form-control-sm"
-              formControlName="licensenumber"
-            />
-          </div>
-          <label
-            for="licensetypeid"
-            class="col-sm-1 col-form-label text-primary"
-            >License Type:</label
-          >
-          <div class="col-3">
-            <select
-              class="form-select form-select-sm"
-              id="licensetypeid"
-              formControlName="licensetypeid"
-              *ngIf="isEdit; else showLicenseType"
-            >
-              <option *ngFor="let group of dltypes" [value]="group.id">
-                {{ group.name }}
-              </option>
-            </select>
-            <ng-template #showLicenseType>
+        <div class="text-success fw-medium fs-7">
+          <div class="mb-3 row border">
+            <label for="dname" class="col-sm-1 col-form-label">Name:</label>
+            <div class="col-3">
               <input
+                id="dname"
+                type="text"
+                name="dname"
                 class="form-control form-control-sm"
+                formControlName="name"
+              />
+            </div>
+            <label for="dob" class="col-sm-1 col-form-label"
+              >Date of birth:</label
+            >
+            <div class="col-3">
+              <input
+                id="dob"
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="dob"
+                placeholder="mm/dd/yyyy"
+              />
+            </div>
+            <label for="age" class="col-sm-1 col-form-label">Driver Age:</label>
+            <div class="col-3">
+              <input
+                id="age"
+                class="form-control form-control-sm"
+                formControlName="age"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row border">
+            <label for="nic" class="col-sm-1 col-form-label">NIC Card#:</label>
+            <div class="col-3">
+              <input
+                id="nic"
+                class="form-control form-control-sm"
+                type="text"
+                formControlName="nic"
+              />
+            </div>
+            <label for="nicexpiry" class="col-sm-1 col-form-label"
+              >NIC Expiry:</label
+            >
+            <div class="col-3">
+              <input
+                id="nicexpiry"
+                type="text"
+                name="nicexpiry"
+                class="form-control form-control-sm"
+                formControlName="nicexpiry"
+                placeholder="mm/dd/yyyy"
+              />
+            </div>
+            <label
+              for="ddesignation"
+              class="col-sm-1 col-form-label text-success"
+              >Designation:</label
+            >
+            <div class="col-3">
+              <input
+                id="ddesignation"
+                type="text"
+                name="ddesignation"
+                class="form-control form-control-sm"
+                formControlName="designation"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row border">
+            <label for="licensenumber" class="col-sm-1 col-form-label"
+              >License #:</label
+            >
+            <div class="col-3">
+              <input
+                id="licensenumber"
+                type="text"
+                name="licensenumber"
+                class="form-control form-control-sm"
+                formControlName="licensenumber"
+              />
+            </div>
+            <label for="licensetypeid" class="col-sm-1 col-form-label"
+              >License Type:</label
+            >
+            <div class="col-3">
+              <select
+                class="form-select form-select-sm"
                 id="licensetypeid"
-                [value]="getDLTypesName(driverForm.get('licensetypeid')?.value)"
-                disabled
-              />
-            </ng-template>
-          </div>
-          <label
-            for="licenseexpiry"
-            class="col-sm-1 col-form-label text-primary"
-            >License Expiry:</label
-          >
-          <div class="col-3">
-            <input
-              id="licenseexpiry"
-              type="text"
-              name="licenseexpiry"
-              class="form-control form-control-sm"
-              formControlName="licenseexpiry"
-              placeholder="mm/dd/yyyy"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row border">
-          <label for="permitnumber" class="col-sm-1 col-form-label text-primary"
-            >Permit #:</label
-          >
-          <div class="col-3">
-            <input
-              id="permitnumber"
-              type="text"
-              name="permitnumber"
-              class="form-control form-control-sm"
-              formControlName="permitnumber"
-            />
-          </div>
-          <label for="permitissue" class="col-sm-1 col-form-label text-primary"
-            >Permit Issue:</label
-          >
-          <div class="col-3">
-            <input
-              id="permitissue"
-              type="text"
-              name="permitissue"
-              class="form-control form-control-sm"
-              formControlName="permitissue"
-              placeholder="mm/dd/yyyy"
-            />
-          </div>
-          <label for="permitexpiry" class="col-sm-1 col-form-label text-primary"
-            >Permit Expiry:</label
-          >
-          <div class="col-3">
-            <input
-              id="permitexpiry"
-              type="text"
-              name="permitexpiry"
-              class="form-control form-control-sm"
-              formControlName="permitexpiry"
-              placeholder="mm/dd/yyyy"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row border">
-          <label for="bloodgroup" class="col-sm-1 col-form-label text-primary"
-            >Blood Group:</label
-          >
-          <div class="col-3">
-            <select
-              class="form-select form-select-sm"
-              id="bloodgroup"
-              formControlName="bloodgroupid"
-              *ngIf="isEdit; else showBloodGroup"
+                formControlName="licensetypeid"
+                *ngIf="isEdit; else showLicenseType"
+              >
+                <option *ngFor="let group of dltypes" [value]="group.id">
+                  {{ group.name }}
+                </option>
+              </select>
+              <ng-template #showLicenseType>
+                <input
+                  class="form-control form-control-sm"
+                  id="licensetypeid"
+                  [value]="
+                    getDLTypesName(driverForm.get('licensetypeid')?.value)
+                  "
+                  disabled
+                />
+              </ng-template>
+            </div>
+            <label for="licenseexpiry" class="col-sm-1 col-form-label"
+              >License Expiry:</label
             >
-              <option *ngFor="let group of bloodgroups" [value]="group.id">
-                {{ group.name }}
-              </option>
-            </select>
-            <ng-template #showBloodGroup>
+            <div class="col-3">
               <input
+                id="licenseexpiry"
+                type="text"
+                name="licenseexpiry"
                 class="form-control form-control-sm"
+                formControlName="licenseexpiry"
+                placeholder="mm/dd/yyyy"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row border">
+            <label for="permitnumber" class="col-sm-1 col-form-label"
+              >Permit #:</label
+            >
+            <div class="col-3">
+              <input
+                id="permitnumber"
+                type="text"
+                name="permitnumber"
+                class="form-control form-control-sm"
+                formControlName="permitnumber"
+              />
+            </div>
+            <label for="permitissue" class="col-sm-1 col-form-label"
+              >Permit Issue:</label
+            >
+            <div class="col-3">
+              <input
+                id="permitissue"
+                type="text"
+                name="permitissue"
+                class="form-control form-control-sm"
+                formControlName="permitissue"
+                placeholder="mm/dd/yyyy"
+              />
+            </div>
+            <label for="permitexpiry" class="col-sm-1 col-form-label"
+              >Permit Expiry:</label
+            >
+            <div class="col-3">
+              <input
+                id="permitexpiry"
+                type="text"
+                name="permitexpiry"
+                class="form-control form-control-sm"
+                formControlName="permitexpiry"
+                placeholder="mm/dd/yyyy"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row border">
+            <label for="bloodgroup" class="col-sm-1 col-form-label"
+              >Blood Group:</label
+            >
+            <div class="col-3">
+              <select
+                class="form-select form-select-sm"
                 id="bloodgroup"
-                [value]="
-                  getBloodGroupName(driverForm.get('bloodgroupid')?.value)
-                "
-                disabled
-              />
-            </ng-template>
-          </div>
-          <label for="contractorid" class="col-sm-1 col-form-label text-primary"
-            >Contractor:</label
-          >
-          <div class="col-3">
-            <select
-              class="form-select form-select-sm"
-              id="contractorid"
-              formControlName="contractorid"
-              *ngIf="isEdit; else showContractor"
+                formControlName="bloodgroupid"
+                *ngIf="isEdit; else showBloodGroup"
+              >
+                <option *ngFor="let group of bloodgroups" [value]="group.id">
+                  {{ group.name }}
+                </option>
+              </select>
+              <ng-template #showBloodGroup>
+                <input
+                  class="form-control form-control-sm"
+                  id="bloodgroup"
+                  [value]="
+                    getBloodGroupName(driverForm.get('bloodgroupid')?.value)
+                  "
+                  disabled
+                />
+              </ng-template>
+            </div>
+            <label for="contractorid" class="col-sm-1 col-form-label"
+              >Contractor:</label
             >
-              <option *ngFor="let group of contractors" [value]="group.id">
-                {{ group.name }}
-              </option>
-            </select>
-            <ng-template #showContractor>
-              <input
-                class="form-control form-control-sm"
+            <div class="col-3">
+              <select
+                class="form-select form-select-sm"
                 id="contractorid"
-                [value]="
-                  getContractosName(driverForm.get('contractorid')?.value)
-                "
-                disabled
+                formControlName="contractorid"
+                *ngIf="isEdit; else showContractor"
+              >
+                <option *ngFor="let group of contractors" [value]="group.id">
+                  {{ group.name }}
+                </option>
+              </select>
+              <ng-template #showContractor>
+                <input
+                  class="form-control form-control-sm"
+                  id="contractorid"
+                  [value]="
+                    getContractosName(driverForm.get('contractorid')?.value)
+                  "
+                  disabled
+                />
+              </ng-template>
+            </div>
+            <label for="visualid" class="col-sm-1 col-form-label"
+              >Visual:</label
+            >
+            <div class="col-3">
+              <select
+                class="form-select form-select-sm"
+                id="visualid"
+                formControlName="visualid"
+                *ngIf="isEdit; else showVisual"
+              >
+                <option *ngFor="let group of visuals" [value]="group.id">
+                  {{ group.name }}
+                </option>
+              </select>
+              <ng-template #showVisual>
+                <input
+                  class="form-control form-control-sm"
+                  id="visualid"
+                  [value]="getVisualsName(driverForm.get('visualid')?.value)"
+                  disabled
+                />
+              </ng-template>
+            </div>
+          </div>
+          <div class="mb-3 row border">
+            <label for="ddccount" class="col-sm-1 col-form-label"
+              >DDC Count:</label
+            >
+            <div class="col-3">
+              <input
+                id="ddccount"
+                type="number"
+                min="0"
+                name="ddccount"
+                class="form-control form-control-sm"
+                formControlName="ddccount"
               />
-            </ng-template>
+            </div>
+            <label for="experience" class="col-sm-1 col-form-label"
+              >Experience:</label
+            >
+            <div class="col-3">
+              <input
+                id="experience"
+                type="number"
+                min="0"
+                name="experience"
+                class="form-control form-control-sm"
+                formControlName="experience"
+              />
+            </div>
+            <label for="department" class="col-sm-1 col-form-label"
+              >Department:</label
+            >
+            <div class="col-3">
+              <input
+                id="department"
+                type="text"
+                name="department"
+                class="form-control form-control-sm"
+                formControlName="department"
+              />
+            </div>
           </div>
-          <label for="ddccount" class="col-sm-1 col-form-label text-primary"
-            >DDC Count:</label
-          >
-          <div class="col-3">
-            <input
-              id="ddccount"
-              type="number"
-              min="0"
-              name="ddccount"
-              class="form-control form-control-sm"
-              formControlName="ddccount"
-            />
-          </div>
-        </div>
-        <div class="mb-3 row border">
-          <label for="experience" class="col-sm-1 col-form-label text-primary"
-            >Experience:</label
-          >
-          <div class="col-3">
-            <input
-              id="experience"
-              type="number"
-              min="0"
-              name="experience"
-              class="form-control form-control-sm"
-              formControlName="experience"
-            />
+          <div class="mb-3 row border">
+            <label for="comment" class="col-sm-1 col-form-label"
+              >Comment:</label
+            >
+            <div class="col-11">
+              <textarea
+                id="comment"
+                name="comment"
+                class="form-control form-control-sm"
+                formControlName="comment"
+              ></textarea>
+            </div>
           </div>
         </div>
       </div>

@@ -15,7 +15,16 @@
         Please get log-in for access Consult & Train Software.
       </h4>
     </div>
-
+    <div>
+      @if (isAlert) {
+      <app-alert
+        [message]="successMessage"
+        [type]="alertType"
+        [dismissible]="true"
+        (onClosed)="isAlert = false"
+      ></app-alert>
+      }
+    </div>
     <form [formGroup]="formLogin" (ngSubmit)="onLogin()">
       <div class="form">
         <input
@@ -58,18 +67,9 @@
       <div class="col-6">
         <button class="btn btn-outline-primary fs-7">Forgot Password</button>
       </div>
-      <div class="col-6">
-        <button
-          class="btn btn-outline-primary fs-7"
-          (click)="openSignUpModal()"
-        >
-          SignUp Form
-        </button>
-      </div>
     </div>
   </div>
   <div class="right"></div>
 
   <!-- Modal -->
-  <app-signup #signupModel></app-signup>
 </div>
