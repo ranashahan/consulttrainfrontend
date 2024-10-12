@@ -1,5 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FooterComponent } from '../footer/footer.component';
 import {

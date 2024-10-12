@@ -96,7 +96,7 @@
             formControlName="licensetypeid"
           >
             <option disabled selected value="null">-----Select-----</option>
-            @for (item of dltypes; track $index) {
+            @for (item of dltypes(); track $index) {
             <option [value]="item.id">{{ item.name }}</option>
             }
           </select>
@@ -130,7 +130,7 @@
             formControlName="contractorid"
           >
             <option disabled value="null">-----Select-----</option>
-            @for (item of contractors; track $index) {
+            @for (item of contractors(); track $index) {
             <option [value]="item.id">{{ item.name }}</option>
             }
           </select>
@@ -183,7 +183,7 @@
             formControlName="bloodgroupid"
           >
             <option disabled value="null">-----Select-----</option>
-            @for (item of bloodgroups; track $index) {
+            @for (item of bloodgroups(); track $index) {
             <option [value]="item.id">{{ item.name }}</option>
             }
           </select>
@@ -196,7 +196,7 @@
             formControlName="visualid"
           >
             <option disabled value="null">-----Select-----</option>
-            @for (item of visuals; track $index) {
+            @for (item of visuals(); track $index) {
             <option [value]="item.id">{{ item.name }}</option>
             }
           </select>
