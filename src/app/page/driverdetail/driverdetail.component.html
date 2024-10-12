@@ -5,7 +5,8 @@
     [type]="alertType"
     [dismissible]="true"
   ></app-alert>
-  <div *ngIf="driver">
+  <div>
+    @if (driverForm.get('name')?.value) {
     <form [formGroup]="driverForm">
       <div class="form-group small">
         <hr />
@@ -21,11 +22,11 @@
           <div class="col-auto">
             <h3>
               <i class="fa-regular fa-user me-1 text-success"></i
-              >{{ driver.name }}
+              >{{ driverForm.get("name")?.value }}
             </h3>
             <p>
               <i class="fa-regular fa-building me-1 text-success"></i>
-              {{ getContractosName(driverForm.get("contractorid")?.value) }}
+              {{ getContractorName(driverForm.get("contractorid")?.value) }}
             </p>
             <p>
               <i class="fa-regular fa-id-badge me-1 text-success"></i
@@ -188,7 +189,7 @@
                 formControlName="licensetypeid"
                 *ngIf="isEdit; else showLicenseType"
               >
-                <option *ngFor="let group of dltypes" [value]="group.id">
+                <option *ngFor="let group of dltypes()" [value]="group.id">
                   {{ group.name }}
                 </option>
               </select>
@@ -197,7 +198,7 @@
                   class="form-control form-control-sm"
                   id="licensetypeid"
                   [value]="
-                    getDLTypesName(driverForm.get('licensetypeid')?.value)
+                    getDLTypeName(driverForm.get('licensetypeid')?.value)
                   "
                   disabled
                 />
@@ -268,7 +269,7 @@
                 formControlName="bloodgroupid"
                 *ngIf="isEdit; else showBloodGroup"
               >
-                <option *ngFor="let group of bloodgroups" [value]="group.id">
+                <option *ngFor="let group of bloodgroups()" [value]="group.id">
                   {{ group.name }}
                 </option>
               </select>
@@ -293,7 +294,7 @@
                 formControlName="contractorid"
                 *ngIf="isEdit; else showContractor"
               >
-                <option *ngFor="let group of contractors" [value]="group.id">
+                <option *ngFor="let group of contractors()" [value]="group.id">
                   {{ group.name }}
                 </option>
               </select>
@@ -302,7 +303,7 @@
                   class="form-control form-control-sm"
                   id="contractorid"
                   [value]="
-                    getContractosName(driverForm.get('contractorid')?.value)
+                    getContractorName(driverForm.get('contractorid')?.value)
                   "
                   disabled
                 />
@@ -318,7 +319,7 @@
                 formControlName="visualid"
                 *ngIf="isEdit; else showVisual"
               >
-                <option *ngFor="let group of visuals" [value]="group.id">
+                <option *ngFor="let group of visuals()" [value]="group.id">
                   {{ group.name }}
                 </option>
               </select>
@@ -326,7 +327,7 @@
                 <input
                   class="form-control form-control-sm"
                   id="visualid"
-                  [value]="getVisualsName(driverForm.get('visualid')?.value)"
+                  [value]="getVisualName(driverForm.get('visualid')?.value)"
                   disabled
                 />
               </ng-template>
@@ -388,5 +389,6 @@
         </div>
       </div>
     </form>
+    }
   </div>
 </div>

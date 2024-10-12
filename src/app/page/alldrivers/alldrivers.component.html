@@ -100,7 +100,7 @@
           formControlName="contractorid"
         >
           <option disabled value="null">Select Contractor name</option>
-          <option *ngFor="let group of contractors" [value]="group.id">
+          <option *ngFor="let group of contractors()" [value]="group.id">
             {{ group.name }}
           </option>
         </select>
@@ -171,7 +171,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (item of paginatedDrivers; track $index) {
+      @for (item of paginatedDrivers(); track $index) {
       <tr>
         <td>
           <div>

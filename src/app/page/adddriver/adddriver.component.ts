@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -16,6 +16,7 @@ import { UtilitiesService } from '../../services/utilities.service';
 import { apiContractorModel } from '../../model/Contractor';
 import { AlertComponent } from '../../widget/alert/alert.component';
 import { VisualService } from '../../services/visual.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-adddriver',
@@ -24,29 +25,30 @@ import { VisualService } from '../../services/visual.service';
   templateUrl: './adddriver.component.html',
   styleUrl: './adddriver.component.css',
 })
-export class AdddriverComponent implements OnInit {
+export class AdddriverComponent implements OnInit, OnDestroy {
   formDriver: FormGroup;
 
-  contractors: apiContractorModel[] = [];
-  bloodgroups: apiGenericModel[] = [];
-  dltypes: apiGenericModel[] = [];
-  visuals: apiGenericModel[] = [];
+  contractors = signal<apiContractorModel[]>([]);
+  bloodgroups = signal<apiGenericModel[]>([]);
+  dltypes = signal<apiGenericModel[]>([]);
+  visuals = signal<apiGenericModel[]>([]);
 
   isAlert: boolean = false;
   alertType = '';
   successMessage = '';
-  // errorMessage = 'There was an error processing your request!';
+
+  subscriptionList: Subscription[] = [];
 
   constructor(
     private dService: DriverService,
-    private Utils: UtilitiesService,
+    private utils: UtilitiesService,
     private bgService: BloodgroupService,
     private dltypeService: DltypeService,
     private cService: ContractorService,
     private vService: VisualService,
     private fb: FormBuilder
   ) {
-    Utils.setTitle('Add Driver');
+    utils.setTitle('Add Driver');
     this.formDriver = this.fb.group({
       name: ['', Validators.required],
       dob: [null],
@@ -75,26 +77,34 @@ export class AdddriverComponent implements OnInit {
   }
 
   getBloodGroups() {
-    this.bgService.getAllBloodgroups().subscribe((res: any) => {
-      this.bloodgroups = res;
-    });
+    this.subscriptionList.push(
+      this.bgService.getAllBloodgroups().subscribe((res: any) => {
+        this.bloodgroups.set(res);
+      })
+    );
   }
   getVisuals() {
-    this.vService.getAllVisuals().subscribe((res: any) => {
-      this.visuals = res;
-    });
+    this.subscriptionList.push(
+      this.vService.getAllVisuals().subscribe((res: any) => {
+        this.visuals.set(res);
+      })
+    );
   }
 
   getDLTypes() {
-    this.dltypeService.getAllDLTypes().subscribe((res: any) => {
-      this.dltypes = res;
-    });
+    this.subscriptionList.push(
+      this.dltypeService.getAllDLTypes().subscribe((res: any) => {
+        this.dltypes.set(res);
+      })
+    );
   }
 
   getContractors() {
-    this.cService.getAllContractors().subscribe((res: any) => {
-      this.contractors = res;
-    });
+    this.subscriptionList.push(
+      this.cService.getAllContractors().subscribe((res: any) => {
+        this.contractors.set(res);
+      })
+    );
   }
 
   formReset() {
@@ -103,44 +113,52 @@ export class AdddriverComponent implements OnInit {
   }
 
   createDriver() {
-    this.dService
-      .createDriver(
-        this.formDriver.value.name,
-        this.formDriver.value.dob,
-        this.formDriver.value.nic,
-        this.formDriver.value.nicexpiry,
-        this.formDriver.value.licensenumber,
-        this.formDriver.value.licensetypeid,
-        this.formDriver.value.licenseexpiry,
-        this.formDriver.value.designation,
-        this.formDriver.value.department,
-        this.formDriver.value.permitnumber,
-        this.formDriver.value.permitissue,
-        this.formDriver.value.bloodgroupid,
-        this.formDriver.value.contractorid,
-        this.formDriver.value.visualid,
-        this.formDriver.value.ddccount,
-        this.formDriver.value.experience,
-        this.formDriver.value.comment
-      )
-      .subscribe({
-        next: (data) => {
-          if (this.isAlert) {
-            this.isAlert = false;
-          }
-          this.successMessage = data.message.toString();
-          this.alertType = 'success';
-          this.isAlert = true;
-          this.formReset();
-        },
-        error: (err) => {
-          if (this.isAlert) {
-            this.isAlert = false;
-          }
-          this.successMessage = err.message;
-          this.alertType = 'danger';
-          this.isAlert = true;
-        },
-      });
+    this.subscriptionList.push(
+      this.dService
+        .createDriver(
+          this.formDriver.value.name,
+          this.formDriver.value.dob,
+          this.formDriver.value.nic,
+          this.formDriver.value.nicexpiry,
+          this.formDriver.value.licensenumber,
+          this.formDriver.value.licensetypeid,
+          this.formDriver.value.licenseexpiry,
+          this.formDriver.value.designation,
+          this.formDriver.value.department,
+          this.formDriver.value.permitnumber,
+          this.formDriver.value.permitissue,
+          this.formDriver.value.bloodgroupid,
+          this.formDriver.value.contractorid,
+          this.formDriver.value.visualid,
+          this.formDriver.value.ddccount,
+          this.formDriver.value.experience,
+          this.formDriver.value.comment
+        )
+        .subscribe({
+          next: (data) => {
+            if (this.isAlert) {
+              this.isAlert = false;
+            }
+            this.successMessage = data.message.toString();
+            this.alertType = 'success';
+            this.isAlert = true;
+            this.formReset();
+          },
+          error: (err) => {
+            if (this.isAlert) {
+              this.isAlert = false;
+            }
+            this.successMessage = err.message;
+            this.alertType = 'danger';
+            this.isAlert = true;
+          },
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionList.forEach((sub: Subscription) => {
+      sub.unsubscribe();
+    });
   }
 }

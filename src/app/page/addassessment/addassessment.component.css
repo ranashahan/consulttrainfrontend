@@ -21,3 +21,6 @@
 td {
   white-space: nowrap; /* Prevent the column content from wrapping */
 }
+.my-form-field .mat-form-field-wrapper {
+  margin-bottom: -1.25em;
+}
