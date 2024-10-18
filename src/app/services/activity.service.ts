@@ -4,12 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { apiActivityModel } from '../model/Activity';
+import {
+  apiMasterCategoryModel,
+  apiSlaveCategoryModel,
+} from '../model/Category';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ActivityService {
   private readonly apiURL = `${environment.apiUrl}activity/`;
+  private readonly apiMasterURL = `${environment.apiUrl}activity/master/`;
+  private readonly apiSlaveURL = `${environment.apiUrl}activity/slave/`;
 
   private selectedCategoryId: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
@@ -88,6 +94,71 @@ export class ActivityService {
       description,
       initials,
       slavecategoryid,
+      userid: this.authService.getUserID(),
+    });
+  }
+
+  getMasterCategoriesAll(): Observable<apiMasterCategoryModel> {
+    return this.http.get<apiMasterCategoryModel>(this.apiMasterURL + 'getAll');
+  }
+
+  updateMasterCategory(
+    id: number,
+    name: string,
+    description: string
+  ): Observable<apiMasterCategoryModel> {
+    return this.http.put<apiMasterCategoryModel>(this.apiMasterURL + id, {
+      name,
+      description,
+      userid: this.authService.getUserID(),
+    });
+  }
+
+  createMasterCategory(
+    name: string,
+    description: string
+  ): Observable<apiMasterCategoryModel> {
+    return this.http.post<apiMasterCategoryModel>(
+      this.apiMasterURL + 'create',
+      {
+        name,
+        description,
+        userid: this.authService.getUserID(),
+      }
+    );
+  }
+
+  getSlaveCategoriesAll(): Observable<apiSlaveCategoryModel> {
+    return this.http.get<apiSlaveCategoryModel>(this.apiSlaveURL + 'getAll');
+  }
+
+  updateSlaveCategory(
+    id: number,
+    name: string,
+    description: string,
+    initials: string,
+    mastercategoryid: number
+  ): Observable<apiSlaveCategoryModel> {
+    return this.http.put<apiSlaveCategoryModel>(this.apiSlaveURL + id, {
+      name,
+      description,
+      initials,
+      mastercategoryid,
+      userid: this.authService.getUserID(),
+    });
+  }
+
+  createSlaveCategory(
+    name: string,
+    description: string,
+    initials: string,
+    mastercategoryid: number
+  ): Observable<apiSlaveCategoryModel> {
+    return this.http.post<apiSlaveCategoryModel>(this.apiSlaveURL + 'create', {
+      name,
+      description,
+      initials,
+      mastercategoryid,
       userid: this.authService.getUserID(),
     });
   }

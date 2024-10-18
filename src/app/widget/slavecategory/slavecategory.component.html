@@ -29,7 +29,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of secondaryCategories; let i = index">
+    <tr *ngFor="let item of secondaryCategories(); let i = index">
       <td class="col col-lg-1">{{ i + 1 }}</td>
       <td>
         <div *ngIf="item.isEdit">
@@ -86,7 +86,7 @@
             [(ngModel)]="item.mastercategoryid"
           >
             <option
-              *ngFor="let category of primaryCategories"
+              *ngFor="let category of primaryCategories()"
               [value]="category.id"
             >
               {{ category.name }}
@@ -209,7 +209,7 @@
                 required
               >
                 <option disabled value="null">Select Primary Category</option>
-                @for (item of primaryCategories; track $index) {
+                @for (item of primaryCategories(); track $index) {
                 <option [value]="item.id">{{ item.name }}</option>
                 }
               </select>

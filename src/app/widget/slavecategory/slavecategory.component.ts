@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { UtilitiesService } from '../../services/utilities.service';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
@@ -10,6 +10,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  apiMasterCategoryModel,
+  apiSlaveCategoryModel,
+} from '../../model/Category';
+import { ActivityService } from '../../services/activity.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-slavecategory',
@@ -18,10 +24,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './slavecategory.component.html',
   styleUrl: './slavecategory.component.css',
 })
-export class SlavecategoryComponent implements OnInit {
-  private readonly apiURL = `${environment.apiUrl}activity/slave/`;
-  primaryCategories: any[] = [];
-  secondaryCategories: apiSecondaryModel[] = [];
+export class SlavecategoryComponent implements OnInit, OnDestroy {
+  primaryCategories = signal<apiMasterCategoryModel[]>([]);
+  secondaryCategories = signal<apiSlaveCategoryModel[]>([]);
+
+  subscriptionList: Subscription[] = [];
 
   formSecondaryCategory = new FormGroup({
     name: new FormControl(),
@@ -30,9 +37,8 @@ export class SlavecategoryComponent implements OnInit {
     mastercategoryid: new FormControl(),
   });
   constructor(
-    private http: HttpClient,
-    private Utils: UtilitiesService,
-    private authService: AuthService
+    private activityService: ActivityService,
+    private Utils: UtilitiesService
   ) {}
   ngOnInit(): void {
     this.getAll();
@@ -40,26 +46,26 @@ export class SlavecategoryComponent implements OnInit {
   }
 
   getAllPrimary(): void {
-    this.http
-      .get(`${environment.apiUrl}activity/master/getAll`)
-      .subscribe((res: any) => {
-        this.primaryCategories = res;
-      });
+    this.subscriptionList.push(
+      this.activityService.getMasterCategoriesAll().subscribe((res: any) => {
+        this.primaryCategories.set(res);
+      })
+    );
   }
 
   getMasterCategoryName(mastercategoryid: number): string {
-    const foundCategory = this.primaryCategories.find(
+    const foundCategory = this.primaryCategories().find(
       (category) => category.id === mastercategoryid
     );
     return foundCategory ? foundCategory.name : '';
   }
 
   getAll(): void {
-    this.http
-      .get<apiSecondaryModel>(this.apiURL + 'getAll')
-      .subscribe((res: any) => {
-        this.secondaryCategories = res;
-      });
+    this.subscriptionList.push(
+      this.activityService.getSlaveCategoriesAll().subscribe((res: any) => {
+        this.secondaryCategories.set(res);
+      })
+    );
   }
   update(
     id: number,
@@ -68,18 +74,14 @@ export class SlavecategoryComponent implements OnInit {
     initials: string,
     mastercategoryid: number
   ) {
-    this.http
-      .put<apiSecondaryModel>(this.apiURL + id, {
-        name,
-        description,
-        initials,
-        mastercategoryid,
-        userid: this.authService.getUserID(),
-      })
-      .subscribe((res: any) => {
-        alert('Secondary Category Updated Successfully');
-        this.getAll();
-      });
+    this.subscriptionList.push(
+      this.activityService
+        .updateSlaveCategory(id, name, description, initials, mastercategoryid)
+        .subscribe((res: any) => {
+          alert('Secondary Category Updated Successfully');
+          this.getAll();
+        })
+    );
   }
 
   create(
@@ -88,24 +90,19 @@ export class SlavecategoryComponent implements OnInit {
     initials: string,
     mastercategoryid: number
   ) {
-    console.log(name + description + initials + mastercategoryid);
-    this.http
-      .post<apiSecondaryModel>(this.apiURL + 'create', {
-        name,
-        description,
-        initials,
-        mastercategoryid,
-        userid: this.authService.getUserID(),
-      })
-      .subscribe((res: any) => {
-        onmessage = res.message;
-        alert(onmessage);
-        this.getAll();
-      });
+    this.subscriptionList.push(
+      this.activityService
+        .createSlaveCategory(name, description, initials, mastercategoryid)
+        .subscribe((res: any) => {
+          onmessage = res.message;
+          alert(onmessage);
+          this.getAll();
+        })
+    );
   }
 
   onEdit(item: any) {
-    this.secondaryCategories.forEach((element: apiSecondaryModel) => {
+    this.secondaryCategories().forEach((element: apiSlaveCategoryModel) => {
       element.isEdit = false;
     });
     item.isEdit = true;
@@ -119,17 +116,10 @@ export class SlavecategoryComponent implements OnInit {
   formReset() {
     this.formSecondaryCategory.reset();
   }
-}
-interface apiSecondaryModel {
-  id: number;
-  name: string;
-  description: string;
-  initials: string;
-  mastercategoryid: number;
-  active: number;
-  createdby: number;
-  modifiedby: number;
-  created_at: string;
-  modified_at: string;
-  isEdit: boolean;
+
+  ngOnDestroy(): void {
+    this.subscriptionList.forEach((sub: Subscription) => {
+      sub.unsubscribe();
+    });
+  }
 }

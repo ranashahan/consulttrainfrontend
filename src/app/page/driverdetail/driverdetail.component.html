@@ -1,12 +1,14 @@
 <div class="container-fluid">
+  @if (isAlert) {
   <app-alert
-    *ngIf="isAlert"
     [message]="successMessage"
     [type]="alertType"
     [dismissible]="true"
+    (onClosed)="isAlert = false"
   ></app-alert>
+  }
   <div>
-    @if (driverForm.get('name')?.value) {
+    @if (driverForm.get('id')?.value) {
     <form [formGroup]="driverForm">
       <div class="form-group small">
         <hr />
@@ -39,26 +41,6 @@
           </div>
           <div class="mb-3 col-auto">
             <button
-              class="btn btn-outline-success btn-sm"
-              type="button"
-              (click)="toggleEdit()"
-              *ngIf="!isEdit"
-            >
-              <i class="far fa-edit"></i>
-
-              {{ "Edit" }}
-            </button>
-            <button
-              *ngIf="isEdit"
-              id="savebtn"
-              class="btn btn-outline-success btn-sm ms-1"
-              type="submit"
-              (click)="updateDriver(); toggleEdit()"
-            >
-              <i class="fa-regular fa-floppy-disk"></i>
-              Save
-            </button>
-            <button
               class="btn btn-outline-success btn-sm ms-1"
               type="button"
               routerLink="/adddriver"
@@ -74,31 +56,51 @@
               <i class="fa-solid fa-print"></i>
               Print
             </button>
+            @if (isEdit) {
+            <button
+              id="savebtn"
+              class="btn btn-outline-success btn-sm ms-1"
+              type="submit"
+              [disabled]="driverForm.invalid"
+              (click)="updateDriver(); toggleEdit()"
+            >
+              <i class="fa-regular fa-floppy-disk"></i>
+              Save
+            </button>
 
             <button
               type="reset"
-              class="btn btn-outline-secondary btn-sm mx-1"
+              class="btn btn-outline-secondary btn-sm ms-1"
               (click)="resetForm()"
-              *ngIf="isEdit"
             >
               <i class="fa-solid fa-window-restore"></i>
               Reset
             </button>
             <button
-              class="btn btn-outline-success btn-sm"
-              *ngIf="isEdit"
+              class="btn btn-outline-success btn-sm ms-1"
               (click)="toggleEdit()"
             >
               <i class="fa-regular fa-rectangle-xmark"></i>
               cancel
             </button>
+            }@else{
+            <button
+              class="btn btn-outline-success btn-sm ms-1"
+              type="button"
+              (click)="toggleEdit()"
+            >
+              <i class="far fa-edit"></i>
+
+              {{ "Edit" }}
+            </button>
+            }
           </div>
         </div>
         <hr />
         <div class="text-success fw-medium fs-7">
           <div class="mb-3 row border">
             <label for="dname" class="col-sm-1 col-form-label">Name:</label>
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="dname"
                 type="text"
@@ -110,7 +112,7 @@
             <label for="dob" class="col-sm-1 col-form-label"
               >Date of birth:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="dob"
                 type="text"
@@ -120,17 +122,17 @@
               />
             </div>
             <label for="age" class="col-sm-1 col-form-label">Driver Age:</label>
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="age"
                 class="form-control form-control-sm"
                 formControlName="age"
+                placeholder="NONE"
               />
             </div>
-          </div>
-          <div class="mb-3 row border">
+
             <label for="nic" class="col-sm-1 col-form-label">NIC Card#:</label>
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="nic"
                 class="form-control form-control-sm"
@@ -141,7 +143,7 @@
             <label for="nicexpiry" class="col-sm-1 col-form-label"
               >NIC Expiry:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="nicexpiry"
                 type="text"
@@ -156,21 +158,20 @@
               class="col-sm-1 col-form-label text-success"
               >Designation:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="ddesignation"
                 type="text"
                 name="ddesignation"
+                placeholder="Safety Manager"
                 class="form-control form-control-sm"
                 formControlName="designation"
               />
             </div>
-          </div>
-          <div class="mb-3 row border">
             <label for="licensenumber" class="col-sm-1 col-form-label"
               >License #:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="licensenumber"
                 type="text"
@@ -182,32 +183,31 @@
             <label for="licensetypeid" class="col-sm-1 col-form-label"
               >License Type:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
+              @if (isEdit) {
               <select
                 class="form-select form-select-sm"
                 id="licensetypeid"
                 formControlName="licensetypeid"
-                *ngIf="isEdit; else showLicenseType"
               >
-                <option *ngFor="let group of dltypes()" [value]="group.id">
-                  {{ group.name }}
-                </option>
+                <option disabled selected value="null">-----Select-----</option>
+                @for (item of dltypes(); track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+                }
               </select>
-              <ng-template #showLicenseType>
-                <input
-                  class="form-control form-control-sm"
-                  id="licensetypeid"
-                  [value]="
-                    getDLTypeName(driverForm.get('licensetypeid')?.value)
-                  "
-                  disabled
-                />
-              </ng-template>
+              }@else {
+              <input
+                class="form-control form-control-sm"
+                id="licensetypeid"
+                placeholder="-----Select-----"
+                [value]="getDLTypeName(driverForm.get('licensetypeid')?.value)"
+                disabled
+              />}
             </div>
             <label for="licenseexpiry" class="col-sm-1 col-form-label"
               >License Expiry:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="licenseexpiry"
                 type="text"
@@ -217,16 +217,15 @@
                 placeholder="mm/dd/yyyy"
               />
             </div>
-          </div>
-          <div class="mb-3 row border">
             <label for="permitnumber" class="col-sm-1 col-form-label"
               >Permit #:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="permitnumber"
                 type="text"
                 name="permitnumber"
+                placeholder="CONT-2892"
                 class="form-control form-control-sm"
                 formControlName="permitnumber"
               />
@@ -234,7 +233,7 @@
             <label for="permitissue" class="col-sm-1 col-form-label"
               >Permit Issue:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="permitissue"
                 type="text"
@@ -247,7 +246,7 @@
             <label for="permitexpiry" class="col-sm-1 col-form-label"
               >Permit Expiry:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="permitexpiry"
                 type="text"
@@ -257,92 +256,95 @@
                 placeholder="mm/dd/yyyy"
               />
             </div>
-          </div>
-          <div class="mb-3 row border">
             <label for="bloodgroup" class="col-sm-1 col-form-label"
               >Blood Group:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
+              @if (isEdit) {
               <select
                 class="form-select form-select-sm"
                 id="bloodgroup"
                 formControlName="bloodgroupid"
-                *ngIf="isEdit; else showBloodGroup"
               >
-                <option *ngFor="let group of bloodgroups()" [value]="group.id">
-                  {{ group.name }}
-                </option>
+                <option disabled selected value="null">-----Select-----</option>
+                @for (item of bloodgroups(); track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+                }
               </select>
-              <ng-template #showBloodGroup>
-                <input
-                  class="form-control form-control-sm"
-                  id="bloodgroup"
-                  [value]="
-                    getBloodGroupName(driverForm.get('bloodgroupid')?.value)
-                  "
-                  disabled
-                />
-              </ng-template>
+              }@else {
+              <input
+                class="form-control form-control-sm"
+                id="bloodgroup"
+                placeholder="-----Select-----"
+                [value]="
+                  getBloodGroupName(driverForm.get('bloodgroupid')?.value)
+                "
+                disabled
+              />
+              }
             </div>
             <label for="contractorid" class="col-sm-1 col-form-label"
               >Contractor:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
+              @if (isEdit) {
               <select
                 class="form-select form-select-sm"
                 id="contractorid"
                 formControlName="contractorid"
-                *ngIf="isEdit; else showContractor"
               >
-                <option *ngFor="let group of contractors()" [value]="group.id">
-                  {{ group.name }}
-                </option>
+                <option disabled selected value="null">-----Select-----</option>
+                @for (item of contractors(); track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+                }
               </select>
-              <ng-template #showContractor>
-                <input
-                  class="form-control form-control-sm"
-                  id="contractorid"
-                  [value]="
-                    getContractorName(driverForm.get('contractorid')?.value)
-                  "
-                  disabled
-                />
-              </ng-template>
+              }@else {
+              <input
+                class="form-control form-control-sm"
+                id="contractorid"
+                placeholder="-----Select-----"
+                [value]="
+                  getContractorName(driverForm.get('contractorid')?.value)
+                "
+                disabled
+              />
+              }
             </div>
             <label for="visualid" class="col-sm-1 col-form-label"
               >Visual:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
+              @if (isEdit) {
               <select
                 class="form-select form-select-sm"
                 id="visualid"
                 formControlName="visualid"
-                *ngIf="isEdit; else showVisual"
               >
-                <option *ngFor="let group of visuals()" [value]="group.id">
-                  {{ group.name }}
-                </option>
+                <option disabled selected value="null">-----Select-----</option>
+                @for (item of visuals(); track $index) {
+                <option [value]="item.id">{{ item.name }}</option>
+                }
               </select>
-              <ng-template #showVisual>
-                <input
-                  class="form-control form-control-sm"
-                  id="visualid"
-                  [value]="getVisualName(driverForm.get('visualid')?.value)"
-                  disabled
-                />
-              </ng-template>
+              }@else {
+              <input
+                class="form-control form-control-sm"
+                id="visualid"
+                placeholder="-----Select-----"
+                [value]="getVisualName(driverForm.get('visualid')?.value)"
+                disabled
+              />
+              }
             </div>
-          </div>
-          <div class="mb-3 row border">
             <label for="ddccount" class="col-sm-1 col-form-label"
               >DDC Count:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="ddccount"
                 type="number"
                 min="0"
                 name="ddccount"
+                placeholder="1"
                 class="form-control form-control-sm"
                 formControlName="ddccount"
               />
@@ -350,12 +352,13 @@
             <label for="experience" class="col-sm-1 col-form-label"
               >Experience:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="experience"
                 type="number"
                 min="0"
                 name="experience"
+                placeholder="1"
                 class="form-control form-control-sm"
                 formControlName="experience"
               />
@@ -363,21 +366,20 @@
             <label for="department" class="col-sm-1 col-form-label"
               >Department:</label
             >
-            <div class="col-3">
+            <div class="col-lg-3 col-md-5 col-sm-11 mt-2">
               <input
                 id="department"
                 type="text"
                 name="department"
+                placeholder="Quality Control"
                 class="form-control form-control-sm"
                 formControlName="department"
               />
             </div>
-          </div>
-          <div class="mb-3 row border">
             <label for="comment" class="col-sm-1 col-form-label"
               >Comment:</label
             >
-            <div class="col-11">
+            <div class="col-lg-11 col-md-11 col-sm-11 mt-2">
               <textarea
                 id="comment"
                 name="comment"

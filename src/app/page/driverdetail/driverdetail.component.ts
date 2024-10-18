@@ -1,12 +1,18 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DriverService } from '../../services/driver.service';
-import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { BloodgroupService } from '../../services/bloodgroup.service';
 import { apiGenericModel } from '../../model/Generic';
@@ -21,25 +27,20 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-driverdetail',
   standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    AlertComponent,
-  ],
+  imports: [RouterLink, ReactiveFormsModule, AlertComponent],
   templateUrl: './driverdetail.component.html',
   styleUrl: './driverdetail.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DriverdetailComponent implements OnInit, OnDestroy {
   driverId: number = 0;
   isEdit = false;
-  driverForm!: FormGroup;
+  driverForm: FormGroup;
   bloodgroups = signal<apiGenericModel[]>([]);
   dltypes = signal<apiGenericModel[]>([]);
   visuals = signal<apiGenericModel[]>([]);
   contractors = signal<apiContractorModel[]>([]);
-
+  initialFormData: any;
   isAlert: boolean = false;
   alertType = '';
   successMessage = '';
@@ -58,6 +59,7 @@ export class DriverdetailComponent implements OnInit, OnDestroy {
    * @param dltypeService dltypes service for api calls
    * @param utils utilities service for set page title
    * @param vService visual service for api calls
+   * @param cdRef Change detector Reference
    */
   constructor(
     private fb: FormBuilder,
@@ -67,39 +69,43 @@ export class DriverdetailComponent implements OnInit, OnDestroy {
     private cService: ContractorService,
     private dltypeService: DltypeService,
     private utils: UtilitiesService,
-    private vService: VisualService
-  ) {}
-  /**
-   * This method will invoke all the methods while rendering the page
-   */
-  ngOnInit(): void {
+    private vService: VisualService,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.utils.setTitle('Driver details');
-    // Get the ID from the route
-    this.driverId = parseInt(this.route.snapshot.paramMap.get('id') ?? '0');
-
     this.driverForm = this.fb.group({
       id: [{ value: '', disabled: true }], // Always disabled
-      name: [{ value: '', disabled: !this.isEdit }],
+      name: [{ value: '', disabled: !this.isEdit }, Validators.required],
       dob: [{ value: null, disabled: !this.isEdit }],
       age: [{ value: '', disabled: !this.isEdit }],
-      nic: [{ value: '', disabled: true }],
+      nic: [{ value: '', disabled: true }, Validators.required],
       nicexpiry: [{ value: null, disabled: !this.isEdit }],
-      licensenumber: [{ value: '', disabled: !this.isEdit }],
-      licensetypeid: [{ value: '', disabled: !this.isEdit }],
+      licensenumber: [
+        { value: '', disabled: !this.isEdit },
+        Validators.required,
+      ],
+      licensetypeid: [{ value: null, disabled: !this.isEdit }],
       licenseexpiry: [{ value: '', disabled: !this.isEdit }],
       designation: [{ value: '', disabled: !this.isEdit }],
       department: [{ value: '', disabled: !this.isEdit }],
       permitnumber: [{ value: '', disabled: !this.isEdit }],
       permitissue: [{ value: '', disabled: !this.isEdit }],
       permitexpiry: [{ value: '', disabled: !this.isEdit }],
-      bloodgroupid: [{ value: '', disabled: !this.isEdit }],
-      contractorid: [{ value: '', disabled: !this.isEdit }],
-      visualid: [{ value: '', disabled: !this.isEdit }],
+      bloodgroupid: [{ value: null, disabled: !this.isEdit }],
+      contractorid: [{ value: null, disabled: !this.isEdit }],
+      visualid: [{ value: null, disabled: !this.isEdit }],
       ddccount: [{ value: 0, disabled: !this.isEdit }],
       experience: [{ value: 0, disabled: !this.isEdit }],
       comment: [{ value: '', disabled: !this.isEdit }],
       createdby: [{ value: '', disabled: true }],
     });
+  }
+  /**
+   * This method will invoke all the methods while rendering the page
+   */
+  ngOnInit(): void {
+    // Get the ID from the route
+    this.driverId = parseInt(this.route.snapshot.paramMap.get('id') ?? '0');
     // Fetch the driver details using the ID
     if (this.driverId) {
       this.getDriver();
@@ -191,8 +197,8 @@ export class DriverdetailComponent implements OnInit, OnDestroy {
       this.driverService
         .getDriverByID(this.driverId)
         .subscribe((driverData: any) => {
-          // this.driver = driverData[0];
           this.driverForm.patchValue(driverData[0]);
+          this.cdRef.detectChanges();
         })
     );
   }
@@ -275,8 +281,10 @@ export class DriverdetailComponent implements OnInit, OnDestroy {
         const control = this.driverForm.get(field);
         if (this.isEdit) {
           control?.enable(); // Enable fields when in edit mode
+          // this.cdRef.detectChanges();
         } else {
           control?.disable(); // Disable fields when not in edit mode
+          // this.cdRef.detectChanges();
         }
       }
     });
