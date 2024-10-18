@@ -19,13 +19,6 @@
       ></app-alert>
       }
     </div>
-    <!-- Button to Trigger Modal -->
-
-    <!-- Driver Search Modal Component -->
-    <app-driversearch
-      #driverSearchModal
-      (driverSelected)="onDriverSelected($event)"
-    ></app-driversearch>
 
     <div class="bg-success bg-opacity-50 fs-7 fw-medium mt-3">
       <h6 class="ms-3">Driver Information</h6>
@@ -133,24 +126,6 @@
           </div>
         </div>
         <div class="col-auto">
-          <label class="label ms-1" for="inlineFormInputGroupdltype"
-            >License Type</label
-          >
-          <div class="input-group">
-            <select
-              class="form-select form-select-sm"
-              id="inlineFormInputGroupdltype"
-              formControlName="licensetypeid"
-            >
-              @for (item of dltypes$|async; track $index) {
-              <option [value]="item.id">
-                {{ item.name }}
-              </option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="col-auto">
           <label class="label ms-1" for="inlineFormInputGroupLicenseExpiry"
             >License Expiry</label
           >
@@ -193,24 +168,6 @@
           </div>
         </div>
         <div class="col-auto">
-          <label class="label ms-1" for="inlineFormInputGroupBlood"
-            >BloodGroup</label
-          >
-          <div class="input-group">
-            <select
-              class="form-select form-select-sm"
-              id="inlineFormInputGroupBlood"
-              formControlName="bloodgroupid"
-            >
-              @for (item of bloodGroups$|async; track $index) {
-              <option [value]="item.id">
-                {{ item.name }}
-              </option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="col-auto">
           <label class="label ms-1" for="inlineFormInputGroupClient"
             >Clients</label
           >
@@ -241,34 +198,6 @@
               }
             </select>
           </div>
-        </div>
-
-        <div class="col-auto">
-          <label class="label ms-1" for="inlineFormInputGroupvisual"
-            >Visual</label
-          >
-          <div class="input-group">
-            <select
-              class="form-select form-select-sm"
-              id="inlineFormInputGroupvisual"
-              formControlName="visualid"
-            >
-              @for (item of visuals$|async; track $index) {
-              <option [value]="item.id">
-                {{ item.name }}
-              </option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="col-auto">
-          <button
-            type="submit"
-            class="btn btn-warning btn-sm"
-            (click)="openSearchModal()"
-          >
-            <i class="fa-regular fa-circle-user me-1"></i>Select Driver
-          </button>
         </div>
       </form>
       <hr />
@@ -609,7 +538,6 @@
           class="btn btn-outline-primary"
           type="submit"
           [disabled]="assessmentForm.invalid"
-          (click)="insertAssessment()"
         >
           Save
         </button>

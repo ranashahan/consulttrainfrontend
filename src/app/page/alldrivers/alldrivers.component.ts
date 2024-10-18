@@ -101,7 +101,7 @@ export class AlldriversComponent implements OnInit, OnDestroy {
   }
 
   deleteDriver(id: number) {
-    if (confirm('Are you really want to delete driver'))
+    if (confirm('Are you really want to delete driver?'))
       this.subscriptionList.push(
         this.driverService.deleteDriverByID(id).subscribe((res: any) => {
           alert('Driver deleted successfully');
@@ -132,7 +132,7 @@ export class AlldriversComponent implements OnInit, OnDestroy {
     );
   }
 
-  getContractosName(contractorId: number): string {
+  getContractorName(contractorId: number): string {
     return this.utils.getGenericName(this.contractors(), contractorId);
   }
 

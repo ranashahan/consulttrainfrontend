@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { DriverService } from '../../services/driver.service';
 import { CommonModule } from '@angular/common';
+import { apiDriverModel } from '../../model/Driver';
 declare var bootstrap: any; // Access Bootstrap's global object
 
 @Component({
@@ -18,7 +19,7 @@ declare var bootstrap: any; // Access Bootstrap's global object
 })
 export class DriversearchComponent {
   searchForm: FormGroup;
-  drivers: any[] = [];
+  drivers = signal<apiDriverModel[]>([]);
   @Output() driverSelected = new EventEmitter<object>(); // Event to emit driver ID
 
   constructor(private fb: FormBuilder, private driverService: DriverService) {
@@ -31,14 +32,14 @@ export class DriversearchComponent {
   searchDrivers() {
     const searchCriteria = this.searchForm.value.nic;
     this.driverService.getDriverByNIC(searchCriteria).subscribe((data: any) => {
-      console.log(data);
-      this.drivers = data;
+      // console.log(data);
+      this.drivers.set(data);
     });
   }
 
   // Select driver and emit the ID
-  selectDriver(driverId: object) {
-    this.driverSelected.emit(driverId); // Emit the selected driver ID
+  selectDriver(driver: object) {
+    this.driverSelected.emit(driver); // Emit the selected driver ID
   }
 
   openModal() {

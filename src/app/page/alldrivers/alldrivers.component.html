@@ -130,138 +130,140 @@
     <input
       type="text"
       class="form-control"
-      placeholder="Filter by name..."
+      placeholder="Filter by driver name......"
       [(ngModel)]="searchTerm"
       (input)="filterDrivers()"
     />
   </div>
   <hr />
-  <button
-    class="btn btn-sm btn-outline-secondary ms-1 float-end"
-    (click)="executeExport()"
-    title="Export to Excel"
-  >
-    <i class="fa-solid fa-file-excel me-1"></i>Export
-  </button>
-  <button
-    class="btn btn-sm btn-outline-secondary float-end"
-    routerLink="/adddriver"
-  >
-    <i class="fa-solid fa-circle-plus me-1"></i>Add new driver
-  </button>
-
-  <table
-    class="table table-hover table-bordered table-responsive-md fs-7"
-    id="alldrivers-table"
-  >
-    <thead class="table-success">
-      <tr>
-        <th>#</th>
-        <th>ID</th>
-        <th>Driver Name</th>
-        <th>Contractor</th>
-        <th>NIC</th>
-        <th>License #</th>
-        <th>License Type</th>
-        <th>License Expiry</th>
-        <th>Permit #</th>
-        <th>Permit Issue</th>
-        <th>Permit Expiry</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of paginatedDrivers(); track $index) {
-      <tr>
-        <td>
-          <div>
-            {{ $index + 1 }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.id }}
-          </div>
-        </td>
-        <td>
-          <div>
-            <a routerLink="/alldrivers/{{ item.id }}">
-              {{ item.name }}
-            </a>
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ getContractosName(item.contractorid) }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.nic }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.licensenumber }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ getDLTypesName(item.licensetypeid) }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.licenseexpiry }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.permitnumber }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.permitissue }}
-          </div>
-        </td>
-        <td>
-          <div>
-            {{ item.permitexpiry }}
-          </div>
-        </td>
-
-        <td>
-          <button
-            type="button"
-            class="btn btn-outline-success position-relative"
-            (click)="viewDriverDetails(item.id)"
-          >
-            <i class="fa-solid fa-circle-info"></i>
-            <div *ngIf="item.ddccount">
-              <span
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
-              >
-                {{ item.ddccount }}
-                <span class="visually-hidden">unread messages</span>
-              </span>
+  <div class="row">
+    <div class="col-12">
+      <button
+        class="btn btn-sm btn-outline-secondary ms-1 float-end"
+        (click)="executeExport()"
+        title="Export to Excel"
+      >
+        <i class="fa-solid fa-file-excel me-1"></i>Export
+      </button>
+      <button
+        class="btn btn-sm btn-outline-secondary float-end"
+        routerLink="/adddriver"
+      >
+        <i class="fa-solid fa-circle-plus me-1"></i>Add new driver
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered fs-7" id="alldrivers-table">
+      <thead class="table-success">
+        <tr>
+          <th>#</th>
+          <th>ID</th>
+          <th>Driver Name</th>
+          <th>Contractor</th>
+          <th>NIC</th>
+          <th>License #</th>
+          <th>License Type</th>
+          <th>License Expiry</th>
+          <th>Permit #</th>
+          <th>Permit Issue</th>
+          <th>Permit Expiry</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of paginatedDrivers(); track $index) {
+        <tr>
+          <td>
+            <div>
+              {{ $index + 1 }}
             </div>
-          </button>
-          <button
-            class="btn btn-sm btn-outline-danger ms-3"
-            (click)="deleteDriver(item.id)"
-          >
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </td>
-      </tr>
-      }@empty {
-      <tr>
-        <p>Please update your search criteria for items to be displayed</p>
-      </tr>
-      }
-    </tbody>
-  </table>
+          </td>
+          <td>
+            <div>
+              {{ item.id }}
+            </div>
+          </td>
+          <td>
+            <div>
+              <a routerLink="/alldrivers/{{ item.id }}">
+                {{ item.name }}
+              </a>
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ getContractorName(item.contractorid) }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.nic }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.licensenumber }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ getDLTypesName(item.licensetypeid) }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.licenseexpiry }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.permitnumber }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.permitissue }}
+            </div>
+          </td>
+          <td>
+            <div>
+              {{ item.permitexpiry }}
+            </div>
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-outline-success position-relative"
+              (click)="viewDriverDetails(item.id)"
+            >
+              <i class="fa-solid fa-circle-info"></i>
+              <div *ngIf="item.ddccount">
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
+                >
+                  {{ item.ddccount }}
+                  <span class="visually-hidden">unread messages</span>
+                </span>
+              </div>
+            </button>
+            <button
+              class="btn btn-sm btn-outline-danger ms-3"
+              (click)="deleteDriver(item.id)"
+            >
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+        }@empty {
+        <tr>
+          <p>Please update your search criteria for items to be displayed</p>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   <nav>
     <ul class="pagination justify-content-center">
       <li class="page-item" [class.disabled]="currentPage === 1">

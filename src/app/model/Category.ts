@@ -6,3 +6,30 @@ export interface apiCategoryModel {
   initials: string;
   assessments: apiAssessmentModel[];
 }
+
+export interface apiMasterCategoryModel {
+  id: number;
+  name: string;
+  description: string;
+  active: number;
+  createdby: number;
+  modifiedby: number;
+  created_at: string;
+  modified_at: string;
+  isEdit: boolean;
+  message: string;
+}
+
+export interface apiSlaveCategoryModel {
+  id: number;
+  name: string;
+  description: string;
+  initials: string;
+  mastercategoryid: number;
+  active: number;
+  createdby: number;
+  modifiedby: number;
+  created_at: string;
+  modified_at: string;
+  isEdit: boolean;
+}

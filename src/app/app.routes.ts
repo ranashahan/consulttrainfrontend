@@ -25,6 +25,7 @@ import { ClientComponent } from './page/client/client.component';
 import { GuestdashboardComponent } from './page/guestdashboard/guestdashboard.component';
 import { ConfigureassessmentComponent } from './page/configureassessment/configureassessment.component';
 import { PagenotfoundComponent } from './page/pagenotfound/pagenotfound.component';
+import { AssessmentdetailComponent } from './page/assessmentdetail/assessmentdetail.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -72,6 +73,12 @@ export const routes: Routes = [
       {
         path: 'allassessments',
         component: AllassessmentsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['admin', 'manager', 'staff', 'member'] },
+      },
+      {
+        path: 'allassessments/:id',
+        component: AssessmentdetailComponent,
         canActivate: [authGuard],
         data: { roles: ['admin', 'manager', 'staff', 'member'] },
       },

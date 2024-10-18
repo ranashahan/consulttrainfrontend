@@ -1,8 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -21,9 +26,10 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-adddriver',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AlertComponent],
+  imports: [ReactiveFormsModule, AlertComponent],
   templateUrl: './adddriver.component.html',
   styleUrl: './adddriver.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdddriverComponent implements OnInit, OnDestroy {
   formDriver: FormGroup;
@@ -36,9 +42,13 @@ export class AdddriverComponent implements OnInit, OnDestroy {
   isAlert: boolean = false;
   alertType = '';
   successMessage = '';
-
+  /**
+   * Subscriptionlist so ngondestory will destory all registered subscriptions.
+   */
   subscriptionList: Subscription[] = [];
-
+  /**
+   * Constructor
+   */
   constructor(
     private dService: DriverService,
     private utils: UtilitiesService,
@@ -46,9 +56,10 @@ export class AdddriverComponent implements OnInit, OnDestroy {
     private dltypeService: DltypeService,
     private cService: ContractorService,
     private vService: VisualService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdRef: ChangeDetectorRef
   ) {
-    utils.setTitle('Add Driver');
+    this.utils.setTitle('Add Driver');
     this.formDriver = this.fb.group({
       name: ['', Validators.required],
       dob: [null],
@@ -69,13 +80,18 @@ export class AdddriverComponent implements OnInit, OnDestroy {
       comment: [''],
     });
   }
+  /**
+   * This method will invoke all the methods while rendering the page
+   */
   ngOnInit(): void {
     this.getBloodGroups();
     this.getDLTypes();
     this.getContractors();
     this.getVisuals();
   }
-
+  /**
+   * This methid will get bloodgroups
+   */
   getBloodGroups() {
     this.subscriptionList.push(
       this.bgService.getAllBloodgroups().subscribe((res: any) => {
@@ -83,6 +99,9 @@ export class AdddriverComponent implements OnInit, OnDestroy {
       })
     );
   }
+  /**
+   * This methid will get visuals
+   */
   getVisuals() {
     this.subscriptionList.push(
       this.vService.getAllVisuals().subscribe((res: any) => {
@@ -90,7 +109,9 @@ export class AdddriverComponent implements OnInit, OnDestroy {
       })
     );
   }
-
+  /**
+   * This methid will get DLTypes
+   */
   getDLTypes() {
     this.subscriptionList.push(
       this.dltypeService.getAllDLTypes().subscribe((res: any) => {
@@ -99,6 +120,9 @@ export class AdddriverComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * This methid will get contractors
+   */
   getContractors() {
     this.subscriptionList.push(
       this.cService.getAllContractors().subscribe((res: any) => {
@@ -107,11 +131,9 @@ export class AdddriverComponent implements OnInit, OnDestroy {
     );
   }
 
-  formReset() {
-    this.formDriver.reset();
-    //this.isAlert = false;
-  }
-
+  /**
+   * This method will create driver
+   */
   createDriver() {
     this.subscriptionList.push(
       this.dService
@@ -142,7 +164,8 @@ export class AdddriverComponent implements OnInit, OnDestroy {
             this.successMessage = data.message.toString();
             this.alertType = 'success';
             this.isAlert = true;
-            this.formReset();
+            this.cdRef.detectChanges();
+            this.resetForm();
           },
           error: (err) => {
             if (this.isAlert) {
@@ -156,6 +179,15 @@ export class AdddriverComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * This method will reset the form value to blank
+   */
+  resetForm(): void {
+    this.formDriver.reset();
+  }
+  /**
+   * This method will destory all the subscriptions
+   */
   ngOnDestroy(): void {
     this.subscriptionList.forEach((sub: Subscription) => {
       sub.unsubscribe();

@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,7 +7,9 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UtilitiesService } from '../../services/utilities.service';
-import { AuthService } from '../../services/auth.service';
+import { apiMasterCategoryModel } from '../../model/Category';
+import { ActivityService } from '../../services/activity.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-mastercategory',
@@ -18,19 +18,18 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './mastercategory.component.html',
   styleUrl: './mastercategory.component.css',
 })
-export class MastercategoryComponent implements OnInit {
-  private readonly apiURL = `${environment.apiUrl}activity/master/`;
-
-  primaryCategories: apiPrimaryModel[] = [];
+export class MastercategoryComponent implements OnInit, OnDestroy {
+  primaryCategories = signal<apiMasterCategoryModel[]>([]);
   formPrimaryCategory = new FormGroup({
     name: new FormControl(),
     description: new FormControl(),
   });
 
+  subscriptionList: Subscription[] = [];
+
   constructor(
-    private http: HttpClient,
     private utils: UtilitiesService,
-    private authService: AuthService
+    private activityService: ActivityService
   ) {}
 
   ngOnInit(): void {
@@ -38,41 +37,37 @@ export class MastercategoryComponent implements OnInit {
   }
 
   getAll(): void {
-    this.http
-      .get<apiPrimaryModel>(this.apiURL + 'getAll')
-      .subscribe((res: any) => {
-        this.primaryCategories = res;
-      });
+    this.subscriptionList.push(
+      this.activityService.getMasterCategoriesAll().subscribe((res: any) => {
+        this.primaryCategories.set(res);
+      })
+    );
   }
   update(id: number, name: string, description: string) {
-    this.http
-      .put<apiPrimaryModel>(this.apiURL + id, {
-        name,
-        description,
-        userid: this.authService.getUserID(),
-      })
-      .subscribe((res: any) => {
-        alert('Primary Category Updated Successfully');
-        this.getAll();
-      });
+    this.subscriptionList.push(
+      this.activityService
+        .updateMasterCategory(id, name, description)
+        .subscribe((res: any) => {
+          alert('Primary Category Updated Successfully');
+          this.getAll();
+        })
+    );
   }
 
   create(name: string, description: string) {
-    this.http
-      .post<apiPrimaryModel>(this.apiURL + 'create', {
-        name,
-        description,
-        userid: this.authService.getUserID(),
-      })
-      .subscribe((res: any) => {
-        onmessage = res.message;
-        alert(onmessage);
-        this.getAll();
-      });
+    this.subscriptionList.push(
+      this.activityService
+        .createMasterCategory(name, description)
+        .subscribe((res: any) => {
+          onmessage = res.message;
+          alert(onmessage);
+          this.getAll();
+        })
+    );
   }
 
   onEdit(item: any) {
-    this.primaryCategories.forEach((element: apiPrimaryModel) => {
+    this.primaryCategories().forEach((element: apiMasterCategoryModel) => {
       element.isEdit = false;
     });
     item.isEdit = true;
@@ -86,14 +81,13 @@ export class MastercategoryComponent implements OnInit {
   formReset() {
     this.formPrimaryCategory.reset();
   }
-}
-interface apiPrimaryModel {
-  id: number;
-  name: string;
-  description: string;
-  createdby: number;
-  modifiedby: number;
-  created_at: string;
-  modified_at: string;
-  isEdit: boolean;
+
+  /**
+   * This method will destory all the subscriptions
+   */
+  ngOnDestroy(): void {
+    this.subscriptionList.forEach((sub: Subscription) => {
+      sub.unsubscribe();
+    });
+  }
 }
